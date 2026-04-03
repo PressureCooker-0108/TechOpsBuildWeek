@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rotaract Team Management</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body class="team-page">
+  <div class="ambient-bg" aria-hidden="true">
+    <span class="ambient-bg__orb ambient-bg__orb--one"></span>
+    <span class="ambient-bg__orb ambient-bg__orb--two"></span>
+  </div>
+
+  <nav class="navbar">
+    <div class="brand">Rotaract Club</div>
+    <div class="nav-links">
+      <a href="./index.html" class="active">Team</a>
+      <a href="./admin.html">Admin</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <p class="eyebrow">Rotaract Team Directory</p>
+    <h1>Meet the Team</h1>
+    <p>Discover club members, their posts, and what they bring to the team.</p>
+  </header>
+
+  <section class="stats" id="stats"></section>
+
+  <section class="controls">
+    <input id="searchInput" type="text" placeholder="Search by name, post, or board" aria-label="Search members" />
+
+    <div class="filter-row">
+      <select id="boardFilter" aria-label="Filter by board">
+        <option value="">All Boards</option>
+      </select>
+
+      <select id="roleFilter" aria-label="Filter by post">
+        <option value="">All Posts</option>
+      </select>
+    </div>
+  </section>
+
+  <section id="loadingState" class="loading">Loading team members...</section>
+  <section id="memberGrid" class="member-grid"></section>
+  <section id="emptyState" class="empty hidden">No members match your search/filter.</section>
+
+  <div id="profileModal" class="profile-modal hidden" aria-hidden="true">
+    <div class="profile-modal__backdrop" data-modal-close></div>
+    <div class="profile-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="profileName">
+      <button type="button" class="profile-modal__close" id="modalCloseBtn" aria-label="Close profile">×</button>
+      <img id="modalAvatar" class="profile-modal__avatar" src="https://via.placeholder.com/600x400?text=Rotaract+Member" alt="Member avatar" />
+      <div class="profile-modal__content">
+        <p id="modalPost" class="profile-modal__post"></p>
+        <h2 id="profileName"></h2>
+        <p id="modalDepartment" class="profile-modal__meta"></p>
+        <p id="modalBoard" class="profile-modal__meta"></p>
+        <blockquote id="modalQuote" class="profile-modal__quote"></blockquote>
+        <div id="modalSkills" class="skill-tags"></div>
+        <p id="modalWork" class="profile-modal__work"></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
+

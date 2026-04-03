@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rotaract Admin Panel</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="brand">Rotaract Club</div>
+    <div class="nav-links">
+      <a href="./index.html">Team</a>
+      <a href="./admin.html" class="active">Admin</a>
+    </div>
+  </nav>
+
+  <main class="admin-layout">
+    <section class="admin-card">
+      <h1>Admin Panel</h1>
+      <p class="admin-note">Use this panel to add, edit, and delete team members.</p>
+
+      <div class="admin-auth">
+        <label for="adminPassword">Admin Password</label>
+        <input id="adminPassword" type="password" placeholder="Enter admin password" autocomplete="current-password" />
+        <button type="button" id="unlockAdminBtn">Unlock Admin Panel</button>
+        <p id="authStatus" class="auth-status">Locked. Enter the admin password to enable add/edit/delete actions.</p>
+      </div>
+
+      <form id="memberForm" class="member-form">
+        <input id="memberId" type="hidden" />
+
+        <label for="name">Name</label>
+        <input id="name" required />
+
+        <label for="role">Post</label>
+        <input id="role" required />
+
+        <label for="department">Department</label>
+        <input id="department" required />
+
+        <label for="board">Board</label>
+        <input id="board" placeholder="e.g. 2024-25" />
+
+        <label for="linkedin">LinkedIn</label>
+        <input id="linkedin" type="url" placeholder="https://linkedin.com/in/username" />
+
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="name@rotaract.org" />
+
+        <label for="avatar">Avatar URL</label>
+        <input id="avatar" type="url" placeholder="https://example.com/photo.jpg" />
+
+        <label for="quote">Quote</label>
+        <textarea id="quote" rows="3" placeholder="Short quote about the member"></textarea>
+
+        <label for="skills">Skills</label>
+        <textarea id="skills" rows="3" placeholder="Comma-separated skills, e.g. Leadership, Design, Communication"></textarea>
+
+        <label for="work">Work / Description</label>
+        <textarea id="work" rows="4" placeholder="Describe the member's responsibilities and contribution"></textarea>
+
+        <div class="form-actions">
+          <button type="submit" id="saveBtn">Save Member</button>
+          <button type="button" id="cancelEditBtn" class="outline">Cancel Edit</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="admin-card">
+      <h2>Team Members</h2>
+      <p class="admin-note">Edit or remove records directly from this list.</p>
+      <div id="adminLoading" class="loading">Loading members...</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Post</th>
+              <th>Board</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="memberTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
+
