@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://YOUR-RENDER-SERVICE.onrender.com/$1"
+      "destination": "https://https://techopsbuildweek.onrender.com/$1"
     },
     {
       "source": "/admin",
