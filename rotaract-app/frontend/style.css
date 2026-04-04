@@ -161,6 +161,58 @@ button {
   gap: 1rem;
 }
 
+.member-grid.member-grid--sections {
+  display: block;
+}
+
+.board-section {
+  padding-top: 0.45rem;
+}
+
+.board-section + .board-section {
+  margin-top: 1.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.28);
+}
+
+.board-section__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.85rem;
+}
+
+.board-section__title {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+  letter-spacing: 0.02em;
+}
+
+.board-section__count {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.board-section__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+}
+
+.board-section--fe .board-section__title {
+  color: #f3dc97;
+}
+
+.board-section--se .board-section__title {
+  color: #e8c967;
+}
+
+.board-section--te .board-section__title {
+  color: var(--gold);
+}
+
 .member-card {
   background: linear-gradient(155deg, #19191b 0%, #121214 100%);
   border: 1px solid var(--border);
@@ -727,6 +779,12 @@ td.actions {
 @media (max-width: 900px) {
   .admin-layout {
     grid-template-columns: 1fr;
+  }
+
+  .board-section__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
   }
 
   .filter-row {

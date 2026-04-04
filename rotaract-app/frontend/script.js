@@ -4,6 +4,12 @@ const API_BASE_URL =
     ? 'http://localhost:3000'
     : '/api');
 const ADMIN_PASSWORD_KEY = 'rotaract-admin-password';
+const BOARD_SECTION_ORDER = ['FE Board', 'SE Board', 'TE Board'];
+const BOARD_SECTION_CLASS_MAP = {
+  'FE Board': 'board-section--fe',
+  'SE Board': 'board-section--se',
+  'TE Board': 'board-section--te'
+};
 
 function showToast(message, isError = false) {
   const toast = document.getElementById('toast');
@@ -245,53 +251,109 @@ function renderMembers(members, memberGrid, emptyState) {
   if (!memberGrid || !emptyState) return;
 
   memberGrid.innerHTML = '';
+  memberGrid.classList.add('member-grid--sections');
 
   if (!members.length) {
     emptyState.classList.remove('hidden');
     return;
   }
 
-  members.forEach((member, index) => {
-    const card = document.createElement('article');
-    card.className = 'member-card';
-    card.tabIndex = 0;
-    card.style.setProperty('--stagger', `${index * 45}ms`);
+  emptyState.classList.add('hidden');
 
-    card.innerHTML = `
-      <div class="member-card__media">
-        <img class="avatar" src="${getText(member.avatar, 'https://via.placeholder.com/300x200?text=Rotaract+Member')}" alt="${member.name}" />
-        <div class="member-card__content">
-          <h3>${member.name}</h3>
-          <p class="member-card__role">${member.role}</p>
-        </div>
-      </div>
-      <p class="post-pill">${member.role}</p>
-      <p class="meta">Board: ${getText(member.board)}</p>
-      <div class="social-links">
-        ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" rel="noreferrer">LinkedIn</a>` : ''}
-        ${member.email ? `<a href="mailto:${member.email}">Email</a>` : ''}
-      </div>
+  const groupedMembers = members.reduce((groups, member) => {
+    const board = member.board && String(member.board).trim()
+      ? String(member.board).trim()
+      : 'Unassigned Board';
+
+    if (!groups.has(board)) {
+      groups.set(board, []);
+    }
+
+    groups.get(board).push(member);
+    return groups;
+  }, new Map());
+
+  const orderedBoards = [...groupedMembers.keys()].sort((left, right) => {
+    const leftIndex = BOARD_SECTION_ORDER.indexOf(left);
+    const rightIndex = BOARD_SECTION_ORDER.indexOf(right);
+    const safeLeftIndex = leftIndex === -1 ? Number.MAX_SAFE_INTEGER : leftIndex;
+    const safeRightIndex = rightIndex === -1 ? Number.MAX_SAFE_INTEGER : rightIndex;
+
+    if (safeLeftIndex !== safeRightIndex) {
+      return safeLeftIndex - safeRightIndex;
+    }
+
+    return left.localeCompare(right);
+  });
+
+  let globalCardIndex = 0;
+
+  orderedBoards.forEach(boardName => {
+    const boardSection = document.createElement('section');
+    boardSection.className = `board-section ${BOARD_SECTION_CLASS_MAP[boardName] || ''}`.trim();
+
+    const heading = document.createElement('div');
+    heading.className = 'board-section__header';
+    heading.innerHTML = `
+      <h2 class="board-section__title">${boardName}</h2>
+      <p class="board-section__count">${groupedMembers.get(boardName).length} member(s)</p>
     `;
 
-    card.addEventListener('click', event => {
-      if (event.target.closest('a')) return;
+    const boardGrid = document.createElement('div');
+    boardGrid.className = 'board-section__grid';
 
-      card.classList.add('is-clicked');
-      setTimeout(() => {
-        card.classList.remove('is-clicked');
-        openModal(member, card);
-      }, 90);
+    groupedMembers.get(boardName).forEach(member => {
+      const card = createMemberCard(member, globalCardIndex);
+      globalCardIndex += 1;
+      boardGrid.appendChild(card);
     });
 
-    card.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        openModal(member, card);
-      }
-    });
-
-    memberGrid.appendChild(card);
+    boardSection.appendChild(heading);
+    boardSection.appendChild(boardGrid);
+    memberGrid.appendChild(boardSection);
   });
+}
+
+function createMemberCard(member, index) {
+  const card = document.createElement('article');
+  card.className = 'member-card';
+  card.tabIndex = 0;
+  card.style.setProperty('--stagger', `${index * 45}ms`);
+
+  card.innerHTML = `
+    <div class="member-card__media">
+      <img class="avatar" src="${getText(member.avatar, 'https://via.placeholder.com/300x200?text=Rotaract+Member')}" alt="${member.name}" />
+      <div class="member-card__content">
+        <h3>${member.name}</h3>
+        <p class="member-card__role">${member.role}</p>
+      </div>
+    </div>
+    <p class="post-pill">${member.role}</p>
+    <p class="meta">Board: ${getText(member.board)}</p>
+    <div class="social-links">
+      ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" rel="noreferrer">LinkedIn</a>` : ''}
+      ${member.email ? `<a href="mailto:${member.email}">Email</a>` : ''}
+    </div>
+  `;
+
+  card.addEventListener('click', event => {
+    if (event.target.closest('a')) return;
+
+    card.classList.add('is-clicked');
+    setTimeout(() => {
+      card.classList.remove('is-clicked');
+      openModal(member, card);
+    }, 90);
+  });
+
+  card.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openModal(member, card);
+    }
+  });
+
+  return card;
 }
 
 function renderStats(members) {
