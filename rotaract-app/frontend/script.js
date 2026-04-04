@@ -4,6 +4,7 @@ const API_BASE_URL =
     ? 'http://localhost:3000'
     : '/api');
 const ADMIN_PASSWORD_KEY = 'rotaract-admin-password';
+const ADMIN_ACCESS_KEY = 'rotaract-admin-access-granted';
 const BOARD_SECTION_ORDER = ['FE Board', 'SE Board', 'TE Board'];
 const BOARD_SECTION_CLASS_MAP = {
   'FE Board': 'board-section--fe',
@@ -471,6 +472,11 @@ async function initializeAdminPage() {
   const memberForm = document.getElementById('memberForm');
   if (!memberForm) return;
 
+  const hasAdminAccess = await ensureAdminPageAccess();
+  if (!hasAdminAccess) return;
+
+  document.body.classList.remove('admin-gated');
+
   const memberIdField = document.getElementById('memberId');
   const adminLoading = document.getElementById('adminLoading');
   const adminPasswordInput = document.getElementById('adminPassword');
@@ -690,6 +696,31 @@ async function initializeAdminPage() {
   }
 
   await loadAdminMembers();
+}
+
+async function ensureAdminPageAccess() {
+  if (sessionStorage.getItem(ADMIN_ACCESS_KEY) === 'true') {
+    return true;
+  }
+
+  const password = window.prompt('Enter admin password to access this page:');
+  const trimmedPassword = password ? password.trim() : '';
+
+  if (!trimmedPassword) {
+    window.location.replace('./index.html');
+    return false;
+  }
+
+  try {
+    await verifyAdminPassword(trimmedPassword);
+    setStoredAdminPassword(trimmedPassword);
+    sessionStorage.setItem(ADMIN_ACCESS_KEY, 'true');
+    return true;
+  } catch (error) {
+    window.alert('Access denied. Redirecting to Team page.');
+    window.location.replace('./index.html');
+    return false;
+  }
 }
 
 function renderAdminTable(members, onEditClick, onDeleteClick) {

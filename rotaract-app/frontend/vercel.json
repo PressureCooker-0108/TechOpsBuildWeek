@@ -5,10 +5,6 @@
       "destination": "https://techopsbuildweek.onrender.com/$1"
     },
     {
-      "source": "/admin",
-      "destination": "/admin.html"
-    },
-    {
       "source": "/",
       "destination": "/index.html"
     }

@@ -761,6 +761,12 @@ td.actions {
   border: 0;
 }
 
+body.admin-gated .navbar,
+body.admin-gated .admin-layout,
+body.admin-gated .toast {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .team-page .member-card,
   .team-page .avatar,
