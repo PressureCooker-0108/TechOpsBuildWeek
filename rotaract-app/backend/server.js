@@ -9,194 +9,200 @@ const CORS_ORIGIN = process.env.CORS_ORIGIN || '';
 
 const LEGACY_BOARD_LABELS = ['2023-24', '2024-25'];
 const LEGACY_MEMBER_COUNT = 29;
+const PREVIOUS_SEED_MEMBER_COUNT = 73;
+const PREVIOUS_SEED_EMAIL_MARKERS = [
+  'aarav.mehta@rotaract.org',
+  'riya.sharma@rotaract.org',
+  'karan.patel@rotaract.org'
+];
 
 const firstNames = [
-  'Aarav', 'Riya', 'Karan', 'Sneha', 'Ishaan', 'Diya', 'Rahul', 'Ananya', 'Vikram', 'Meera',
-  'Kabir', 'Priya', 'Arjun', 'Nisha', 'Dev', 'Tanya', 'Rohit', 'Pooja', 'Siddharth', 'Anika',
-  'Farhan', 'Lavanya', 'Aditya', 'Simran', 'Naveen', 'Kriti', 'Yash', 'Aditi', 'Harsh', 'Neha',
-  'Omkar', 'Sanya', 'Rudra', 'Mitali', 'Parth', 'Ira', 'Ayaan', 'Mrunal', 'Dhruv', 'Ishita',
-  'Vedant', 'Samaira', 'Pranav', 'Tanvi', 'Raghav', 'Kiara', 'Manav', 'Palak', 'Viraj', 'Reyansh',
-  'Nandini', 'Soham', 'Rashi', 'Atharv', 'Ishani', 'Darsh', 'Avni', 'Tushar', 'Esha', 'Ritwik'
+  'Vian', 'Aadhya', 'Shaurya', 'Myra', 'Krish', 'Anvi', 'Yuvan', 'Samruddhi', 'Ariv', 'Ishaani',
+  'Nivaan', 'Ritika', 'Aarush', 'Trisha', 'Hridaan', 'Tanisha', 'Laksh', 'Mihika', 'Vihaan', 'Saanvi',
+  'Atharva', 'Kashvi', 'Rudransh', 'Prachi', 'Devansh', 'Ira', 'Tanish', 'Sakshi', 'Abeer', 'Aarohi',
+  'Reyansh', 'Mrunmayi', 'Samar', 'Eesha', 'Arham', 'Prisha', 'Advik', 'Niyati', 'Parv', 'Suhani',
+  'Yashas', 'Niharika', 'Ayaan', 'Rhea', 'Soham', 'Apeksha', 'Pranay', 'Bhavya', 'Ishir', 'Kritika',
+  'Ritvik', 'Manasi', 'Dhruv', 'Samiksha', 'Ved', 'Harini', 'Kiaan', 'Sharvari', 'Neil', 'Tanmayi'
 ];
 
 const lastNames = [
-  'Mehta', 'Sharma', 'Patel', 'Rao', 'Verma', 'Nair', 'Kapoor', 'Iyer', 'Singh', 'Joshi',
-  'Sood', 'Menon', 'Das', 'Bhat', 'Malhotra', 'Kulkarni', 'Jain', 'Sen', 'Dutta', 'Sheikh',
-  'Prasad', 'Shah', 'Anand', 'Nambiar', 'Vohra', 'Gokhale', 'Deshmukh', 'Chavan', 'Pawar', 'Kadam',
-  'Pathak', 'Mishra', 'Agrawal', 'Naik', 'Gaikwad', 'Bendre', 'Rane', 'Mhatre', 'Sawant', 'Khot'
+  'Patwardhan', 'Deshpande', 'Kulkarni', 'Apte', 'Bhave', 'Lele', 'Gadgil', 'Oak', 'Ketkar', 'Khare',
+  'Bhosale', 'Jadhav', 'Shirke', 'Pingle', 'Puranik', 'Sathe', 'Thatte', 'Inamdar', 'Pathare', 'Gore',
+  'Sane', 'Bhuskute', 'Kanetkar', 'Mokashi', 'Chitale', 'Natu', 'Bapat', 'Agashe', 'Gokhale', 'Bhavekar',
+  'Joshi', 'Pawar', 'Shinde', 'Mane', 'Raut', 'Kale', 'Dhamale', 'Chougule', 'Wagh', 'Khot'
 ];
 
 const personalityStyles = [
-  'a calm systems-thinker who keeps people aligned during busy weeks',
-  'an energetic organizer who turns rough ideas into polished execution plans',
-  'a patient listener who builds trust before driving decisions',
-  'a practical strategist who balances creativity with measurable outcomes',
-  'a disciplined finisher who tracks details without losing the big picture',
-  'a people-first communicator who keeps meetings focused and positive',
-  'an optimistic planner who motivates teams through clear milestones',
-  'a curious problem-solver who improves every process after each event',
-  'a confident presenter who represents the club with warmth and clarity',
-  'a dependable coordinator who quietly removes blockers for the team'
+  'a mission-focused planner who remains calm under operational pressure',
+  'an energetic collaborator who converts intent into executable task maps',
+  'a thoughtful listener who aligns teammates before taking action',
+  'a systems-driven organizer who prevents confusion through clear ownership',
+  'a creative problem-solver who improves workflows after every event cycle',
+  'a reliable executor who quietly ensures deadlines are never missed',
+  'a people-first volunteer leader who keeps everyone engaged and accountable',
+  'a strategic communicator who makes complex plans easy to follow',
+  'a detail-oriented contributor who strengthens quality at each handoff point',
+  'a confident facilitator who brings structure to fast-moving initiatives'
 ];
 
 const traitTriples = [
-  ['Empathetic', 'Decisive', 'Consistent'],
-  ['Resourceful', 'Collaborative', 'Composed'],
-  ['Visionary', 'Grounded', 'Reliable'],
-  ['Analytical', 'Supportive', 'Diligent'],
-  ['Creative', 'Structured', 'Accountable'],
-  ['Adaptive', 'Clear-headed', 'Service-driven'],
-  ['Persuasive', 'Focused', 'Proactive'],
-  ['Mentoring', 'Inclusive', 'Detail-oriented']
+  ['Empathetic', 'Disciplined', 'Dependable'],
+  ['Strategic', 'Collaborative', 'Calm'],
+  ['Analytical', 'Supportive', 'Consistent'],
+  ['Resourceful', 'Proactive', 'Grounded'],
+  ['Creative', 'Accountable', 'Patient'],
+  ['Curious', 'Organized', 'Service-minded'],
+  ['Persuasive', 'Focused', 'Positive'],
+  ['Adaptive', 'Inclusive', 'Execution-oriented']
 ];
 
 const skillsBank = [
-  ['Leadership', 'Public Speaking', 'Conflict Resolution'],
-  ['Operations Planning', 'Task Delegation', 'Time Management'],
-  ['Event Curation', 'Stakeholder Management', 'Execution'],
-  ['Community Outreach', 'Volunteer Coordination', 'Partnership Building'],
-  ['Brand Storytelling', 'Social Media Strategy', 'Content Writing'],
-  ['Budgeting', 'Documentation', 'Reporting'],
-  ['Design Thinking', 'Campaign Planning', 'Presentation'],
-  ['Data Tracking', 'Project Coordination', 'Follow-through']
+  ['Leadership', 'Facilitation', 'Decision Making'],
+  ['Execution Planning', 'Delegation', 'Time Management'],
+  ['Event Operations', 'Coordination', 'Follow-through'],
+  ['Community Outreach', 'Volunteer Management', 'Partnership Building'],
+  ['Brand Communication', 'Social Media Planning', 'Content Writing'],
+  ['Budget Tracking', 'Documentation', 'Process Discipline'],
+  ['Design Support', 'Campaign Structuring', 'Presentation'],
+  ['Data Logging', 'Review Cadence', 'Continuous Improvement']
 ];
 
 const quoteBank = [
-  'Service becomes sustainable when systems and empathy move together.',
-  'Leadership is helping others perform at their best, consistently.',
-  'Good clubs are built in meetings, but great clubs are built in follow-through.',
-  'Impact is not one big day; it is many small actions done well.',
-  'Clarity reduces stress and helps volunteers deliver with confidence.',
-  'We do not chase applause; we chase outcomes that help people.',
-  'The best teams document what works and improve what does not.',
-  'Rotaract grows strongest when every member feels seen and trusted.'
+  'Impact compounds when service is structured and sincere.',
+  'Leadership is consistency when no one is watching.',
+  'A strong board values preparation as much as enthusiasm.',
+  'Every meaningful project begins with listening.',
+  'Execution quality is an act of respect for volunteers and beneficiaries.',
+  'We serve best when we collaborate without ego.',
+  'Good documentation protects future teams from repeating mistakes.',
+  'Rotaract culture grows when responsibility is shared.'
 ];
 
 const projectPool = [
-  'Blood Donation Drive',
-  'Village Literacy Mentoring',
-  'Menstrual Health Awareness Camp',
-  'Campus Plastic-Free Campaign',
-  'Career Sprint for School Students',
-  'Inter-College Service Hackathon',
-  'E-waste Collection Week',
-  'Youth Mental Wellness Circle',
-  'Lake Cleanup Action Day',
-  'Digital Skills for NGOs'
+  'Rural Reading Fellowship',
+  'City Cleanliness Micro-Drives',
+  'STEM Exposure Sessions',
+  'Community Health Awareness Camp',
+  'Student Financial Literacy Week',
+  'Inclusive Campus Access Audit',
+  'Green Transport Awareness Campaign',
+  'Youth Mental Health Support Circle',
+  'Blood Stem Cell Registration Camp',
+  'NGO Digital Ops Accelerator'
 ];
 
 const teBoardProfiles = [
   {
-    name: 'Aarav Mehta',
+    name: 'Vedant Patwardhan',
     role: 'Club President',
     department: 'Leadership',
-    focus: 'overall club strategy, board alignment, and inter-club collaborations',
-    personality: 'a steady, high-accountability leader who keeps the club mission-first even during peak pressure',
-    traits: ['Strategic', 'Empathetic', 'Disciplined'],
-    skills: ['Leadership', 'Public Speaking', 'Decision Making'],
+    focus: 'club strategy, board governance, and long-term service planning',
+    personality: 'a composed systems-leader who balances vision with disciplined execution',
+    traits: ['Strategic', 'Grounded', 'Mentoring'],
+    skills: ['Leadership', 'Public Speaking', 'Execution Governance'],
     achievements: [
-      'Led 4 cross-board flagship initiatives with consistent volunteer retention',
-      'Built a weekly execution review rhythm that improved task closure rates by 38%',
-      'Represented the club at district forums and secured 3 partnership opportunities'
+      'Spearheaded 5 board-wide initiatives with stable volunteer continuity',
+      'Introduced review dashboards that improved closure reliability across teams',
+      'Secured strategic partnerships through district and civic collaboration meetings'
     ],
-    projects: ['Signature Service Calendar', 'Board Performance Dashboard', 'District Collaboration Forum'],
-    quote: 'A strong club is built when people trust both the vision and the process.'
+    projects: ['Annual Impact Blueprint', 'Leadership Review Cadence', 'District Collaboration Exchange'],
+    quote: 'Vision only matters when teams can execute it together.'
   },
   {
-    name: 'Riya Sharma',
+    name: 'Ishita Deshpande',
     role: 'Vice President',
     department: 'Leadership',
-    focus: 'execution governance, issue escalation, and member engagement systems',
-    personality: 'an energetic operator who translates broad goals into week-by-week action plans',
-    traits: ['Proactive', 'Supportive', 'Structured'],
-    skills: ['Operations Planning', 'Communication', 'Coordination'],
+    focus: 'cross-board execution alignment, bottleneck resolution, and team accountability',
+    personality: 'an execution-first leader who turns broad goals into actionable timelines',
+    traits: ['Proactive', 'Structured', 'Supportive'],
+    skills: ['Operations Planning', 'Escalation Management', 'Coordination'],
     achievements: [
-      'Designed execution trackers used by all boards for event readiness',
-      'Mentored 20+ coordinators on planning and team communication basics',
-      'Reduced event-day task spillover through pre-event simulation checklists'
+      'Deployed board-level execution trackers used in all flagship events',
+      'Mentored coordinators on planning discipline and cross-functional communication',
+      'Reduced event-day slippages through readiness rehearsals and checklists'
     ],
-    projects: ['Execution Playbook', 'Coordinator Mentorship Pods', 'Monthly Retrospective Framework'],
-    quote: 'Momentum comes from clarity, not urgency.'
+    projects: ['Execution Playbook 2.0', 'Coordinator Mentorship Pods', 'Issue Escalation Matrix'],
+    quote: 'Clarity creates speed; confusion creates delay.'
   },
   {
-    name: 'Karan Patel',
+    name: 'Soham Kulkarni',
     role: 'Secretary',
     department: 'Administration',
-    focus: 'documentation quality, compliance timelines, and institutional communication',
-    personality: 'a detail-focused communicator who keeps institutional memory clean and actionable',
-    traits: ['Organized', 'Composed', 'Reliable'],
-    skills: ['Documentation', 'Meeting Facilitation', 'Reporting'],
+    focus: 'institutional records, communication hygiene, and governance documentation',
+    personality: 'a detail-oriented communicator who keeps records precise and accessible',
+    traits: ['Organized', 'Reliable', 'Composed'],
+    skills: ['Documentation', 'Minutes Writing', 'Process Reporting'],
     achievements: [
-      'Standardized MOM templates adopted across all major meetings',
-      'Digitized committee records to improve handover quality',
-      'Maintained 100% on-time documentation for district submissions'
+      'Standardized meeting records and handover templates for all functional teams',
+      'Built a searchable digital records repository for board continuity',
+      'Maintained timely submission quality for compliance and district reporting'
     ],
-    projects: ['Central Records Hub', 'Board Handover Kit', 'Policy Quick-Reference Guide'],
-    quote: 'What gets documented well gets executed well.'
+    projects: ['Records Intelligence Hub', 'Committee Handover Kit', 'Policy Snapshot Manual'],
+    quote: 'Precision in records protects momentum in execution.'
   },
   {
-    name: 'Diya Nair',
+    name: 'Aarya Bhosale',
     role: 'Director - Club Service',
     department: 'Club Service',
-    focus: 'member experience, culture rituals, and internal bonding initiatives',
-    personality: 'a warm community-builder who designs experiences that make members feel included from day one',
+    focus: 'member wellbeing, club culture rituals, and retention systems',
+    personality: 'a warm community architect who designs belonging-focused club experiences',
     traits: ['Inclusive', 'Creative', 'Consistent'],
-    skills: ['Member Engagement', 'Program Design', 'Facilitation'],
+    skills: ['Member Engagement', 'Culture Design', 'Facilitation'],
     achievements: [
-      'Ran onboarding circles that improved first-month retention significantly',
-      'Launched monthly reflection meets to sustain member motivation',
-      'Created peer-support squads for smoother event volunteering'
+      'Designed onboarding circles that improved first-month integration',
+      'Launched recurring reflection spaces to sustain volunteer morale',
+      'Created peer buddy loops for stronger team collaboration'
     ],
-    projects: ['Welcome Week Journey', 'Member Pulse Check-ins', 'Peer Buddy Network'],
-    quote: 'Club culture is built in small moments of care.'
+    projects: ['Welcome Journey Program', 'Member Pulse Sprints', 'Peer Buddy Network'],
+    quote: 'Belonging is the foundation of sustained service.'
   },
   {
-    name: 'Farhan Sheikh',
+    name: 'Reyansh Jadhav',
     role: 'Director - Community Service',
     department: 'Community Service',
-    focus: 'high-impact field projects, NGO partnerships, and outcome tracking',
-    personality: 'a grounded field coordinator who pushes for impact metrics, not just activity counts',
+    focus: 'field impact execution, NGO collaboration, and service outcome tracking',
+    personality: 'a pragmatic field leader who values measurable community outcomes',
     traits: ['Service-driven', 'Practical', 'Persistent'],
-    skills: ['Community Outreach', 'Volunteer Management', 'Partnerships'],
+    skills: ['Community Outreach', 'Volunteer Management', 'Partnership Building'],
     achievements: [
-      'Coordinated long-cycle community projects with repeat volunteer cohorts',
-      'Built collaboration pipelines with local NGOs and civic bodies',
-      'Introduced post-project impact reflection notes for board reviews'
+      'Scaled recurring community initiatives with stable volunteer rosters',
+      'Built trusted NGO coordination pipelines for long-cycle projects',
+      'Added post-campaign impact reviews for board learning loops'
     ],
-    projects: ['Neighborhood Action Network', 'Weekend Service Program', 'Impact Reflection Framework'],
-    quote: 'If we listen first, we can serve better and longer.'
+    projects: ['Community Action Grid', 'Weekend Field Service', 'Impact Review Framework'],
+    quote: 'Service quality improves when we measure what changes.'
   },
   {
-    name: 'Meera Joshi',
+    name: 'Nandini Gokhale',
     role: 'Director - Personal Development',
     department: 'Personal Development',
-    focus: 'learning pathways, leadership readiness, and professional skill development',
-    personality: 'a growth-oriented mentor who blends practical career guidance with confidence-building workshops',
+    focus: 'member growth pathways, capability-building, and leadership readiness',
+    personality: 'a growth mentor who combines career clarity with confidence-building',
     traits: ['Mentoring', 'Insightful', 'Encouraging'],
-    skills: ['Workshop Design', 'Mentoring', 'Career Guidance'],
+    skills: ['Workshop Design', 'Mentoring', 'Career Development'],
     achievements: [
-      'Built skill tracks for communication, leadership, and project ownership',
-      'Hosted alumni-led masterclasses with high member participation',
-      'Created personal development checkpoints used by multiple teams'
+      'Designed skill tracks for communication, leadership, and ownership',
+      'Coordinated alumni-led masterclasses with high engagement rates',
+      'Established development checkpoints for longitudinal member growth'
     ],
-    projects: ['Leadership Ladder Series', 'Mock Interview Labs', 'Career Storytelling Sessions'],
-    quote: 'Service and self-growth should progress side by side.'
+    projects: ['Leadership Ladder Series', 'Career Simulation Labs', 'Growth Reflection Pods'],
+    quote: 'A stronger member builds a stronger service ecosystem.'
   },
   {
-    name: 'Lavanya Iyer',
+    name: 'Pranav Apte',
     role: 'Director - International Service',
     department: 'International Service',
-    focus: 'global fellowship collaborations, cultural exchange events, and SDG-linked initiatives',
-    personality: 'a globally curious planner who turns international networking into meaningful learning for members',
+    focus: 'global club collaboration, SDG-linked dialogue, and cross-cultural learning initiatives',
+    personality: 'a globally aware planner who turns networks into meaningful service exchanges',
     traits: ['Curious', 'Diplomatic', 'Forward-looking'],
     skills: ['Cross-cultural Communication', 'Program Curation', 'Networking'],
     achievements: [
-      'Initiated virtual exchanges with Rotaract clubs across multiple regions',
-      'Mapped projects to SDG goals for better strategic positioning',
-      'Developed a collaboration toolkit for inter-club coordination'
+      'Initiated international exchange forums with multiple Rotaract chapters',
+      'Mapped key initiatives to SDG objectives for strategic clarity',
+      'Built reusable templates for cross-club planning and communication'
     ],
-    projects: ['Global Fellowship Dialogues', 'SDG Story Exchange', 'Cross-Border Project Sprint'],
-    quote: 'International service starts with curiosity and respect.'
+    projects: ['Global Fellowship Dialogues', 'SDG Exchange Circles', 'Cross-Border Collaboration Sprint'],
+    quote: 'Global understanding begins with respectful collaboration.'
   }
 ];
 
@@ -421,12 +427,17 @@ async function seedMembersIfEmpty() {
   const { rows } = await tryQuery(`
     SELECT
       COUNT(*)::int AS count,
-      COUNT(*) FILTER (WHERE board = ANY($1::text[]))::int AS legacy_board_count
+      COUNT(*) FILTER (WHERE board = ANY($1::text[]))::int AS legacy_board_count,
+      COUNT(*) FILTER (WHERE email = ANY($2::text[]))::int AS previous_seed_marker_count
     FROM members
-  `, [LEGACY_BOARD_LABELS]);
+  `, [LEGACY_BOARD_LABELS, PREVIOUS_SEED_EMAIL_MARKERS]);
 
-  const stats = rows[0] || { count: 0, legacy_board_count: 0 };
-  const hasLegacyDataset = stats.count === LEGACY_MEMBER_COUNT || stats.legacy_board_count > 0;
+  const stats = rows[0] || { count: 0, legacy_board_count: 0, previous_seed_marker_count: 0 };
+  const hasLegacyDataset =
+    stats.count === LEGACY_MEMBER_COUNT
+    || stats.count === PREVIOUS_SEED_MEMBER_COUNT
+    || stats.legacy_board_count > 0
+    || stats.previous_seed_marker_count > 0;
 
   if (stats.count > 0 && !hasLegacyDataset) {
     return;
