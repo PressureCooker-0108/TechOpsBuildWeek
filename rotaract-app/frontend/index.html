@@ -28,27 +28,15 @@
   <section class="stats" id="stats"></section>
 
   <section class="controls">
-    <input id="searchInput" type="text" placeholder="Search by name, post, or board" aria-label="Search members" />
+    <input id="searchInput" type="text" placeholder="Search by name or board" aria-label="Search Rotaractors" />
 
     <div class="filter-row">
       <select id="boardFilter" aria-label="Filter by board">
         <option value="">All Boards</option>
       </select>
-
-      <select id="roleFilter" aria-label="Filter by post">
-        <option value="">All Posts</option>
-      </select>
-    </div>
-
-    <div class="spotlight-controls">
-      <label for="spotlightRoleSelect">Role Spotlight</label>
-      <select id="spotlightRoleSelect" aria-label="Select spotlight role">
-        <option value="">Auto Spotlight (Leadership Roles)</option>
-      </select>
     </div>
   </section>
 
-  <section id="spotlightSection" class="spotlight-section hidden"></section>
 
   <section id="loadingState" class="loading">Loading Rotaractors...</section>
   <section id="memberGrid" class="member-grid"></section>

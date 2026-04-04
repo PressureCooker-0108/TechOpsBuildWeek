@@ -11,7 +11,6 @@ const BOARD_SECTION_CLASS_MAP = {
   'SE Board': 'board-section--se',
   'TE Board': 'board-section--te'
 };
-const DEFAULT_SPOTLIGHT_ROLES = ['Club President', 'Vice President', 'Secretary', 'Treasurer'];
 
 function showToast(message, isError = false) {
   const toast = document.getElementById('toast');
@@ -286,7 +285,6 @@ async function fetchMembersForUser() {
 
   const searchInput = document.getElementById('searchInput');
   const boardFilter = document.getElementById('boardFilter');
-  const roleFilter = document.getElementById('roleFilter');
 
   try {
     if (loadingState) loadingState.classList.remove('hidden');
@@ -294,8 +292,7 @@ async function fetchMembersForUser() {
 
     const query = new URLSearchParams({
       q: searchInput.value.trim(),
-      board: boardFilter.value,
-      role: roleFilter.value
+      board: boardFilter.value
     });
 
     const response = await fetch(`${API_BASE_URL}/members/search?${query.toString()}`);
@@ -305,68 +302,12 @@ async function fetchMembersForUser() {
     }
 
     const members = await response.json();
-    renderSpotlightSection(members);
     renderMembers(members, memberGrid, emptyState);
   } catch (error) {
     showToast(error.message, true);
   } finally {
     if (loadingState) loadingState.classList.add('hidden');
   }
-}
-
-function renderSpotlightSection(members) {
-  const section = document.getElementById('spotlightSection');
-  const spotlightRoleSelect = document.getElementById('spotlightRoleSelect');
-  if (!section || !spotlightRoleSelect) return;
-
-  const selectedRole = spotlightRoleSelect.value;
-  let spotlightMembers;
-
-  if (selectedRole) {
-    spotlightMembers = members.filter(member => member.role === selectedRole);
-  } else {
-    spotlightMembers = members.filter(member => DEFAULT_SPOTLIGHT_ROLES.includes(member.role));
-  }
-
-  if (!spotlightMembers.length) {
-    section.classList.add('hidden');
-    section.innerHTML = '';
-    return;
-  }
-
-  section.classList.remove('hidden');
-  section.innerHTML = `
-    <div class="spotlight-section__header">
-      <p class="eyebrow">Role Spotlight</p>
-      <h2>${selectedRole || 'Leadership Rotaractors'}</h2>
-    </div>
-    <div class="spotlight-grid"></div>
-  `;
-
-  const spotlightGrid = section.querySelector('.spotlight-grid');
-  spotlightMembers.slice(0, 6).forEach(member => {
-    const card = document.createElement('article');
-    card.className = 'spotlight-card';
-    card.tabIndex = 0;
-    const displayName = formatRotaractorName(member.name);
-    card.innerHTML = `
-      <img class="spotlight-card__avatar" src="${getText(member.avatar, 'https://via.placeholder.com/300x200?text=Rotaract+Member')}" alt="${displayName}" />
-      <div>
-        <h3>${displayName}</h3>
-        <p>${getText(member.role)}</p>
-      </div>
-    `;
-
-    card.addEventListener('click', () => openModal(member, card));
-    card.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        openModal(member, card);
-      }
-    });
-
-    spotlightGrid.appendChild(card);
-  });
 }
 
 function renderMembers(members, memberGrid, emptyState) {
@@ -531,34 +472,16 @@ function renderStats(members) {
 
 function fillFilterOptions(members) {
   const boardFilter = document.getElementById('boardFilter');
-  const roleFilter = document.getElementById('roleFilter');
-  const spotlightRoleSelect = document.getElementById('spotlightRoleSelect');
 
-  if (!boardFilter || !roleFilter) return;
+  if (!boardFilter) return;
 
   const boards = [...new Set(members.map(member => member.board).filter(Boolean))].sort();
-  const roles = [...new Set(members.map(member => member.role).filter(Boolean))].sort();
 
   boards.forEach(board => {
     const option = document.createElement('option');
     option.value = board;
     option.textContent = board;
     boardFilter.appendChild(option);
-  });
-
-
-  roles.forEach(role => {
-    const option = document.createElement('option');
-    option.value = role;
-    option.textContent = role;
-    roleFilter.appendChild(option);
-
-    if (spotlightRoleSelect) {
-      const spotlightOption = document.createElement('option');
-      spotlightOption.value = role;
-      spotlightOption.textContent = role;
-      spotlightRoleSelect.appendChild(spotlightOption);
-    }
   });
 }
 
@@ -590,7 +513,7 @@ async function initializeUserPage() {
     timer = setTimeout(fetchMembersForUser, 250);
   });
 
-  ['boardFilter', 'roleFilter', 'spotlightRoleSelect'].forEach(id => {
+  ['boardFilter'].forEach(id => {
     const element = document.getElementById(id);
     if (element) {
       element.addEventListener('change', fetchMembersForUser);
