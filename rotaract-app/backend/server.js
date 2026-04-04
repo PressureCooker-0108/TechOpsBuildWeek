@@ -72,6 +72,20 @@ const workBank = [
   'Helps with design, digital media, and creative presentations for the club.'
 ];
 
+const introBank = [
+  'A motivated Rotaractor focused on consistent service and dependable execution.',
+  'A collaborative team member who enjoys planning initiatives and supporting peers.',
+  'A calm organizer who keeps projects clear, timely, and member-focused.',
+  'A creative contributor who combines ideas with practical implementation.'
+];
+
+const achievementsBank = [
+  'Led cross-team initiatives and helped deliver high-impact club activities.',
+  'Coordinated multiple events with strong member participation and smooth execution.',
+  'Improved documentation and workflows to support better handovers and planning.',
+  'Strengthened outreach through campaigns, partnerships, and volunteer engagement.'
+];
+
 const seedRows = baseMembers.map((member, index) => ({
   name: member[0],
   role: member[1],
@@ -82,7 +96,9 @@ const seedRows = baseMembers.map((member, index) => ({
   avatar: member[6],
   quote: quoteBank[index % quoteBank.length],
   skills: skillsBank[index % skillsBank.length],
-  work: workBank[index % workBank.length]
+  work: workBank[index % workBank.length],
+  intro: introBank[index % introBank.length],
+  achievements: achievementsBank[index % achievementsBank.length]
 }));
 
 let usingDatabase = false;
@@ -122,13 +138,17 @@ async function ensureMembersTable() {
       avatar TEXT,
       quote TEXT,
       skills TEXT[],
-      work TEXT
+      work TEXT,
+      intro TEXT,
+      achievements TEXT
     )
   `);
 
   await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS quote TEXT');
   await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS skills TEXT[]');
   await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS work TEXT');
+  await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS intro TEXT');
+  await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS achievements TEXT');
 }
 
 async function seedMembersIfEmpty() {
@@ -140,10 +160,10 @@ async function seedMembersIfEmpty() {
   for (const member of seedRows) {
     await tryQuery(
       `
-        INSERT INTO members (name, role, department, board, linkedin, email, avatar, quote, skills, work)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        INSERT INTO members (name, role, department, board, linkedin, email, avatar, quote, skills, work, intro, achievements)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `,
-      [member.name, member.role, member.department, member.board, member.linkedin, member.email, member.avatar, member.quote, member.skills, member.work]
+      [member.name, member.role, member.department, member.board, member.linkedin, member.email, member.avatar, member.quote, member.skills, member.work, member.intro, member.achievements]
     );
   }
 }
@@ -193,7 +213,9 @@ function normalizeMemberPayload(body) {
     avatar: String(body.avatar || '').trim() || null,
     quote: String(body.quote || '').trim() || null,
     skills: normalizeSkills(body.skills),
-    work: String(body.work || '').trim() || null
+    work: String(body.work || '').trim() || null,
+    intro: String(body.intro || '').trim() || null,
+    achievements: String(body.achievements || '').trim() || null
   };
 }
 
@@ -244,11 +266,24 @@ async function addMember(payload) {
 
   const result = await tryQuery(
     `
-      INSERT INTO members (name, role, department, board, linkedin, email, avatar, quote, skills, work)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      INSERT INTO members (name, role, department, board, linkedin, email, avatar, quote, skills, work, intro, achievements)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING *
     `,
-    [payload.name, payload.role, payload.department, payload.board || null, payload.linkedin || null, payload.email || null, payload.avatar || null, payload.quote || null, payload.skills || null, payload.work || null]
+    [
+      payload.name,
+      payload.role,
+      payload.department,
+      payload.board || null,
+      payload.linkedin || null,
+      payload.email || null,
+      payload.avatar || null,
+      payload.quote || null,
+      payload.skills || null,
+      payload.work || null,
+      payload.intro || null,
+      payload.achievements || null
+    ]
   );
   return result.rows[0];
 }
@@ -265,11 +300,25 @@ async function updateMember(id, payload) {
   const result = await tryQuery(
     `
       UPDATE members
-      SET name = $1, role = $2, department = $3, board = $4, linkedin = $5, email = $6, avatar = $7, quote = $8, skills = $9, work = $10
-      WHERE id = $11
+      SET name = $1, role = $2, department = $3, board = $4, linkedin = $5, email = $6, avatar = $7, quote = $8, skills = $9, work = $10, intro = $11, achievements = $12
+      WHERE id = $13
       RETURNING *
     `,
-    [payload.name, payload.role, payload.department, payload.board || null, payload.linkedin || null, payload.email || null, payload.avatar || null, payload.quote || null, payload.skills || null, payload.work || null, id]
+    [
+      payload.name,
+      payload.role,
+      payload.department,
+      payload.board || null,
+      payload.linkedin || null,
+      payload.email || null,
+      payload.avatar || null,
+      payload.quote || null,
+      payload.skills || null,
+      payload.work || null,
+      payload.intro || null,
+      payload.achievements || null,
+      id
+    ]
   );
   return result.rows[0] || null;
 }

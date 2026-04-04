@@ -112,6 +112,8 @@ function openModal(member, sourceCard = null) {
   document.getElementById('modalPost').textContent = `Post: ${getText(member.role)}`;
   document.getElementById('modalDepartment').textContent = `Department: ${getText(member.department)}`;
   document.getElementById('modalBoard').textContent = `Board: ${getText(member.board)}`;
+  document.getElementById('modalIntro').textContent = getText(member.intro, 'No introduction added yet.');
+  document.getElementById('modalAchievements').textContent = getText(member.achievements, 'No achievements listed yet.');
   document.getElementById('modalQuote').textContent = getText(member.quote, 'No quote added yet.');
   document.getElementById('modalWork').textContent = getText(member.work, 'No work description available.');
 
@@ -491,6 +493,8 @@ async function initializeAdminPage() {
     email: document.getElementById('email'),
     avatar: document.getElementById('avatar'),
     quote: document.getElementById('quote'),
+    intro: document.getElementById('intro'),
+    achievements: document.getElementById('achievements'),
     skills: document.getElementById('skills'),
     work: document.getElementById('work')
   };
@@ -554,6 +558,8 @@ async function initializeAdminPage() {
     fields.email.value = member.email || '';
     fields.avatar.value = member.avatar || '';
     fields.quote.value = member.quote || '';
+    fields.intro.value = member.intro || '';
+    fields.achievements.value = member.achievements || '';
     fields.skills.value = normalizeSkills(member.skills).join(', ');
     fields.work.value = member.work || '';
 
@@ -621,6 +627,8 @@ async function initializeAdminPage() {
       email: fields.email.value.trim(),
       avatar: fields.avatar.value.trim(),
       quote: fields.quote.value.trim(),
+      intro: fields.intro.value.trim(),
+      achievements: fields.achievements.value.trim(),
       skills: normalizeSkills(fields.skills.value),
       work: fields.work.value.trim()
     };

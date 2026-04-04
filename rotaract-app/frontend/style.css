@@ -313,6 +313,12 @@ button {
   right: 0.75rem;
   width: 2.25rem;
   height: 2.25rem;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  font-size: 1.35rem;
+  font-weight: 500;
   border-radius: 999px;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.05);
@@ -347,6 +353,21 @@ button {
 .profile-modal__meta {
   margin: 0;
   color: var(--muted);
+}
+
+.profile-modal__section h3 {
+  margin: 0;
+  color: var(--gold-soft);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.profile-modal__text {
+  margin: 0.45rem 0 0;
+  color: var(--text);
+  line-height: 1.65;
+  white-space: pre-line;
 }
 
 .profile-modal__quote {
