@@ -15,6 +15,11 @@ const PREVIOUS_SEED_EMAIL_MARKERS = [
   'riya.sharma@rotaract.org',
   'karan.patel@rotaract.org'
 ];
+const CURRENT_SEED_EMAIL_MARKERS = [
+  'vedant.patwardhan@rotaract.org',
+  'ishita.deshpande@rotaract.org',
+  'soham.kulkarni@rotaract.org'
+];
 
 const firstNames = [
   'Vian', 'Aadhya', 'Shaurya', 'Myra', 'Krish', 'Anvi', 'Yuvan', 'Samruddhi', 'Ariv', 'Ishaani',
@@ -362,6 +367,8 @@ const feSeedRows = buildBoardMembers({
 });
 
 const seedRows = [...teSeedRows, ...seSeedRows, ...feSeedRows];
+const EXPECTED_SEED_MEMBER_COUNT = seedRows.length;
+const MIN_CURRENT_SEED_MARKERS_PRESENT = 2;
 
 let usingDatabase = false;
 let localMembers = seedRows.map((member, index) => ({
@@ -428,22 +435,31 @@ async function seedMembersIfEmpty() {
     SELECT
       COUNT(*)::int AS count,
       COUNT(*) FILTER (WHERE board = ANY($1::text[]))::int AS legacy_board_count,
-      COUNT(*) FILTER (WHERE email = ANY($2::text[]))::int AS previous_seed_marker_count
+      COUNT(*) FILTER (WHERE email = ANY($2::text[]))::int AS previous_seed_marker_count,
+      COUNT(*) FILTER (WHERE email = ANY($3::text[]))::int AS current_seed_marker_count
     FROM members
-  `, [LEGACY_BOARD_LABELS, PREVIOUS_SEED_EMAIL_MARKERS]);
+  `, [LEGACY_BOARD_LABELS, PREVIOUS_SEED_EMAIL_MARKERS, CURRENT_SEED_EMAIL_MARKERS]);
 
-  const stats = rows[0] || { count: 0, legacy_board_count: 0, previous_seed_marker_count: 0 };
+  const stats = rows[0] || {
+    count: 0,
+    legacy_board_count: 0,
+    previous_seed_marker_count: 0,
+    current_seed_marker_count: 0
+  };
   const hasLegacyDataset =
     stats.count === LEGACY_MEMBER_COUNT
     || stats.count === PREVIOUS_SEED_MEMBER_COUNT
     || stats.legacy_board_count > 0
     || stats.previous_seed_marker_count > 0;
+  const hasCurrentDataset =
+    stats.count === EXPECTED_SEED_MEMBER_COUNT
+    && stats.current_seed_marker_count >= MIN_CURRENT_SEED_MARKERS_PRESENT;
 
-  if (stats.count > 0 && !hasLegacyDataset) {
+  if (stats.count > 0 && !hasLegacyDataset && hasCurrentDataset) {
     return;
   }
 
-  if (hasLegacyDataset) {
+  if (stats.count > 0) {
     await tryQuery('TRUNCATE TABLE members RESTART IDENTITY');
   }
 
