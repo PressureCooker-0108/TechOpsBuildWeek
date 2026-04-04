@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS members (
   skills TEXT[],
   work TEXT,
   intro TEXT,
-  achievements TEXT
+  achievements TEXT,
+  projects TEXT[]
 );
 
 ALTER TABLE members ADD COLUMN IF NOT EXISTS quote TEXT;
@@ -22,6 +23,13 @@ ALTER TABLE members ADD COLUMN IF NOT EXISTS skills TEXT[];
 ALTER TABLE members ADD COLUMN IF NOT EXISTS work TEXT;
 ALTER TABLE members ADD COLUMN IF NOT EXISTS intro TEXT;
 ALTER TABLE members ADD COLUMN IF NOT EXISTS achievements TEXT;
+ALTER TABLE members ADD COLUMN IF NOT EXISTS projects TEXT[];
+
+UPDATE members
+SET name = CONCAT('Rtr. ', BTRIM(name))
+WHERE name IS NOT NULL
+  AND BTRIM(name) <> ''
+  AND name !~* '^(rtr\.\s+|rotaractor\s+)';
 
 DO $$
 DECLARE
@@ -108,9 +116,9 @@ DECLARE
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM members) THEN
     FOR i IN 1..array_length(names, 1) LOOP
-      INSERT INTO members (name, role, department, board, linkedin, email, avatar, quote, skills, work, intro, achievements)
+      INSERT INTO members (name, role, department, board, linkedin, email, avatar, quote, skills, work, intro, achievements, projects)
       VALUES (
-        names[i],
+        'Rtr. ' || names[i],
         roles[i],
         departments[i],
         boards[i],
@@ -121,7 +129,8 @@ BEGIN
         skills_bank[((i - 1) % array_length(skills_bank, 1)) + 1],
         work_bank[((i - 1) % array_length(work_bank, 1)) + 1],
         'I am ' || names[i] || ', serving as ' || roles[i] || ' in Rotaract and focused on consistent contribution.',
-        'Contributed to key club initiatives and helped deliver member-focused activities throughout the term.'
+        'Contributed to key club initiatives and helped deliver member-focused activities throughout the term.',
+        ARRAY['Core club initiative support', 'Community-focused execution']::text[]
       );
     END LOOP;
   END IF;

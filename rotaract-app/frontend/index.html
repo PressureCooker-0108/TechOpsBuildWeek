@@ -22,7 +22,7 @@
   <header class="hero">
     <p class="eyebrow">Rotaract Team Directory</p>
     <h1>Meet the Team</h1>
-    <p>Discover club members, their posts, and what they bring to the team.</p>
+    <p>Discover our Rotaractors, their posts, and what they bring to the team.</p>
   </header>
 
   <section class="stats" id="stats"></section>
@@ -39,11 +39,20 @@
         <option value="">All Posts</option>
       </select>
     </div>
+
+    <div class="spotlight-controls">
+      <label for="spotlightRoleSelect">Role Spotlight</label>
+      <select id="spotlightRoleSelect" aria-label="Select spotlight role">
+        <option value="">Auto Spotlight (Leadership Roles)</option>
+      </select>
+    </div>
   </section>
 
-  <section id="loadingState" class="loading">Loading team members...</section>
+  <section id="spotlightSection" class="spotlight-section hidden"></section>
+
+  <section id="loadingState" class="loading">Loading Rotaractors...</section>
   <section id="memberGrid" class="member-grid"></section>
-  <section id="emptyState" class="empty hidden">No members match your search/filter.</section>
+  <section id="emptyState" class="empty hidden">No Rotaractors match your search/filter.</section>
 
   <div id="profileModal" class="profile-modal hidden" aria-hidden="true">
     <div class="profile-modal__backdrop" data-modal-close></div>
@@ -56,12 +65,20 @@
         <p id="modalDepartment" class="profile-modal__meta"></p>
         <p id="modalBoard" class="profile-modal__meta"></p>
         <div class="profile-modal__section">
+          <h3>Social Badges</h3>
+          <div id="modalBadges" class="profile-badge-grid"></div>
+        </div>
+        <div class="profile-modal__section">
           <h3>Introduction</h3>
           <p id="modalIntro" class="profile-modal__text"></p>
         </div>
         <div class="profile-modal__section">
           <h3>Achievements</h3>
-          <p id="modalAchievements" class="profile-modal__text"></p>
+          <div id="modalAchievements" class="profile-list-grid"></div>
+        </div>
+        <div class="profile-modal__section">
+          <h3>Project Gallery</h3>
+          <div id="modalProjects" class="profile-list-grid"></div>
         </div>
         <blockquote id="modalQuote" class="profile-modal__quote"></blockquote>
         <div id="modalSkills" class="skill-tags"></div>

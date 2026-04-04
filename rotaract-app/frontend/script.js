@@ -11,6 +11,7 @@ const BOARD_SECTION_CLASS_MAP = {
   'SE Board': 'board-section--se',
   'TE Board': 'board-section--te'
 };
+const DEFAULT_SPOTLIGHT_ROLES = ['Club President', 'Vice President', 'Secretary', 'Treasurer'];
 
 function showToast(message, isError = false) {
   const toast = document.getElementById('toast');
@@ -32,6 +33,19 @@ function getText(value, fallback = '-') {
   return value && String(value).trim() ? value : fallback;
 }
 
+function formatRotaractorName(name) {
+  const cleanName = String(name || '').trim();
+  if (!cleanName) {
+    return 'Rotaractor';
+  }
+
+  if (/^rtr\.\s+/i.test(cleanName) || /^rotaractor\s+/i.test(cleanName)) {
+    return cleanName;
+  }
+
+  return `Rtr. ${cleanName}`;
+}
+
 function normalizeSkills(skills) {
   if (Array.isArray(skills)) {
     return skills.map(skill => String(skill).trim()).filter(Boolean);
@@ -45,6 +59,34 @@ function normalizeSkills(skills) {
   }
 
   return [];
+}
+
+function normalizeTextList(value) {
+  if (Array.isArray(value)) {
+    return value.map(item => String(item).trim()).filter(Boolean);
+  }
+
+  if (typeof value === 'string' && value.trim()) {
+    return value
+      .split(/[,\n;]+/)
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+function deriveProjectHighlights(member) {
+  const explicitProjects = normalizeTextList(member.projects);
+  if (explicitProjects.length) {
+    return explicitProjects;
+  }
+
+  return String(member.work || '')
+    .split('.')
+    .map(item => item.trim())
+    .filter(Boolean)
+    .slice(0, 4);
 }
 
 function setupModalHandlers() {
@@ -106,16 +148,37 @@ function openModal(member, sourceCard = null) {
   const modal = document.getElementById('profileModal');
   if (!modal) return;
 
+  const displayName = formatRotaractorName(member.name);
+
   document.getElementById('modalAvatar').src = getText(member.avatar, 'https://via.placeholder.com/600x400?text=Rotaract+Member');
-  document.getElementById('modalAvatar').alt = member.name || 'Rotaract member';
-  document.getElementById('profileName').textContent = getText(member.name);
+  document.getElementById('modalAvatar').alt = `${displayName} profile photo`;
+  document.getElementById('profileName').textContent = displayName;
   document.getElementById('modalPost').textContent = `Post: ${getText(member.role)}`;
   document.getElementById('modalDepartment').textContent = `Department: ${getText(member.department)}`;
   document.getElementById('modalBoard').textContent = `Board: ${getText(member.board)}`;
   document.getElementById('modalIntro').textContent = getText(member.intro, 'No introduction added yet.');
-  document.getElementById('modalAchievements').textContent = getText(member.achievements, 'No achievements listed yet.');
   document.getElementById('modalQuote').textContent = getText(member.quote, 'No quote added yet.');
   document.getElementById('modalWork').textContent = getText(member.work, 'No work description available.');
+
+  const badgeWrap = document.getElementById('modalBadges');
+  const badges = [member.role, member.department, member.board].filter(Boolean);
+  if (member.linkedin) badges.push('LinkedIn Ready');
+  if (member.email) badges.push('Email Reachable');
+  badgeWrap.innerHTML = badges.length
+    ? badges.map(item => `<span class="profile-badge">${item}</span>`).join('')
+    : '<span class="profile-badge">No badges available</span>';
+
+  const achievementsWrap = document.getElementById('modalAchievements');
+  const achievements = normalizeTextList(member.achievements);
+  achievementsWrap.innerHTML = achievements.length
+    ? achievements.map(item => `<article class="profile-list-card">${item}</article>`).join('')
+    : '<article class="profile-list-card">No achievements listed yet.</article>';
+
+  const projectsWrap = document.getElementById('modalProjects');
+  const projectHighlights = deriveProjectHighlights(member);
+  projectsWrap.innerHTML = projectHighlights.length
+    ? projectHighlights.map(item => `<article class="profile-list-card">${item}</article>`).join('')
+    : '<article class="profile-list-card">No project highlights added yet.</article>';
 
   const skillsWrap = document.getElementById('modalSkills');
   const skills = normalizeSkills(member.skills);
@@ -237,17 +300,73 @@ async function fetchMembersForUser() {
 
     const response = await fetch(`${API_BASE_URL}/members/search?${query.toString()}`);
     if (!response.ok) {
-      showToast('Unable to fetch members. Make sure the backend is running and PostgreSQL is configured.', true);
+      showToast('Unable to fetch Rotaractors. Make sure the backend is running and PostgreSQL is configured.', true);
       return;
     }
 
     const members = await response.json();
+    renderSpotlightSection(members);
     renderMembers(members, memberGrid, emptyState);
   } catch (error) {
     showToast(error.message, true);
   } finally {
     if (loadingState) loadingState.classList.add('hidden');
   }
+}
+
+function renderSpotlightSection(members) {
+  const section = document.getElementById('spotlightSection');
+  const spotlightRoleSelect = document.getElementById('spotlightRoleSelect');
+  if (!section || !spotlightRoleSelect) return;
+
+  const selectedRole = spotlightRoleSelect.value;
+  let spotlightMembers;
+
+  if (selectedRole) {
+    spotlightMembers = members.filter(member => member.role === selectedRole);
+  } else {
+    spotlightMembers = members.filter(member => DEFAULT_SPOTLIGHT_ROLES.includes(member.role));
+  }
+
+  if (!spotlightMembers.length) {
+    section.classList.add('hidden');
+    section.innerHTML = '';
+    return;
+  }
+
+  section.classList.remove('hidden');
+  section.innerHTML = `
+    <div class="spotlight-section__header">
+      <p class="eyebrow">Role Spotlight</p>
+      <h2>${selectedRole || 'Leadership Rotaractors'}</h2>
+    </div>
+    <div class="spotlight-grid"></div>
+  `;
+
+  const spotlightGrid = section.querySelector('.spotlight-grid');
+  spotlightMembers.slice(0, 6).forEach(member => {
+    const card = document.createElement('article');
+    card.className = 'spotlight-card';
+    card.tabIndex = 0;
+    const displayName = formatRotaractorName(member.name);
+    card.innerHTML = `
+      <img class="spotlight-card__avatar" src="${getText(member.avatar, 'https://via.placeholder.com/300x200?text=Rotaract+Member')}" alt="${displayName}" />
+      <div>
+        <h3>${displayName}</h3>
+        <p>${getText(member.role)}</p>
+      </div>
+    `;
+
+    card.addEventListener('click', () => openModal(member, card));
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openModal(member, card);
+      }
+    });
+
+    spotlightGrid.appendChild(card);
+  });
 }
 
 function renderMembers(members, memberGrid, emptyState) {
@@ -299,7 +418,7 @@ function renderMembers(members, memberGrid, emptyState) {
     heading.className = 'board-section__header';
     heading.innerHTML = `
       <h2 class="board-section__title">${boardName}</h2>
-      <p class="board-section__count">${groupedMembers.get(boardName).length} member(s)</p>
+      <p class="board-section__count">${groupedMembers.get(boardName).length} Rotaractor(s)</p>
     `;
 
     const boardGrid = document.createElement('div');
@@ -322,12 +441,13 @@ function createMemberCard(member, index) {
   card.className = 'member-card';
   card.tabIndex = 0;
   card.style.setProperty('--stagger', `${index * 45}ms`);
+  const displayName = formatRotaractorName(member.name);
 
   card.innerHTML = `
     <div class="member-card__media">
-      <img class="avatar" src="${getText(member.avatar, 'https://via.placeholder.com/300x200?text=Rotaract+Member')}" alt="${member.name}" />
+      <img class="avatar" src="${getText(member.avatar, 'https://via.placeholder.com/300x200?text=Rotaract+Member')}" alt="${displayName}" />
       <div class="member-card__content">
-        <h3>${member.name}</h3>
+        <h3>${displayName}</h3>
         <p class="member-card__role">${member.role}</p>
       </div>
     </div>
@@ -367,7 +487,7 @@ function renderStats(members) {
   const boards = new Set(members.map(member => member.board).filter(Boolean));
 
   const data = [
-    { label: 'Total Members', value: members.length },
+    { label: 'Total Rotaractors', value: members.length },
     { label: 'Posts', value: posts.size },
     { label: 'Boards', value: boards.size }
   ];
@@ -412,6 +532,7 @@ function renderStats(members) {
 function fillFilterOptions(members) {
   const boardFilter = document.getElementById('boardFilter');
   const roleFilter = document.getElementById('roleFilter');
+  const spotlightRoleSelect = document.getElementById('spotlightRoleSelect');
 
   if (!boardFilter || !roleFilter) return;
 
@@ -431,6 +552,13 @@ function fillFilterOptions(members) {
     option.value = role;
     option.textContent = role;
     roleFilter.appendChild(option);
+
+    if (spotlightRoleSelect) {
+      const spotlightOption = document.createElement('option');
+      spotlightOption.value = role;
+      spotlightOption.textContent = role;
+      spotlightRoleSelect.appendChild(spotlightOption);
+    }
   });
 }
 
@@ -443,7 +571,7 @@ async function initializeUserPage() {
   try {
     const response = await fetch(`${API_BASE_URL}/members`);
     if (!response.ok) {
-      showToast('Unable to load initial member data.', true);
+      showToast('Unable to load initial Rotaractor data.', true);
       return;
     }
 
@@ -462,7 +590,7 @@ async function initializeUserPage() {
     timer = setTimeout(fetchMembersForUser, 250);
   });
 
-  ['boardFilter', 'roleFilter'].forEach(id => {
+  ['boardFilter', 'roleFilter', 'spotlightRoleSelect'].forEach(id => {
     const element = document.getElementById(id);
     if (element) {
       element.addEventListener('change', fetchMembersForUser);
@@ -483,6 +611,9 @@ async function initializeAdminPage() {
   const adminLoading = document.getElementById('adminLoading');
   const adminPasswordInput = document.getElementById('adminPassword');
   const unlockAdminBtn = document.getElementById('unlockAdminBtn');
+  const avatarUploadInput = document.getElementById('avatarUpload');
+  const avatarPreview = document.getElementById('avatarPreview');
+  const clearAvatarBtn = document.getElementById('clearAvatarBtn');
 
   const fields = {
     name: document.getElementById('name'),
@@ -495,13 +626,30 @@ async function initializeAdminPage() {
     quote: document.getElementById('quote'),
     intro: document.getElementById('intro'),
     achievements: document.getElementById('achievements'),
+    projects: document.getElementById('projects'),
     skills: document.getElementById('skills'),
     work: document.getElementById('work')
+  };
+
+  const updateAvatarPreview = avatarValue => {
+    if (!avatarPreview) return;
+
+    const src = String(avatarValue || '').trim();
+    if (!src) {
+      avatarPreview.classList.add('hidden');
+      avatarPreview.removeAttribute('src');
+      return;
+    }
+
+    avatarPreview.src = src;
+    avatarPreview.classList.remove('hidden');
   };
 
   const resetForm = () => {
     memberIdField.value = '';
     memberForm.reset();
+    updateAvatarPreview('');
+    if (avatarUploadInput) avatarUploadInput.value = '';
   };
 
   const loadAdminMembers = async () => {
@@ -510,7 +658,7 @@ async function initializeAdminPage() {
 
       const response = await fetch(`${API_BASE_URL}/members`);
       if (!response.ok) {
-        showToast('Unable to fetch members for admin panel. Start the backend and ensure PostgreSQL is running.', true);
+        showToast('Unable to fetch Rotaractors for admin panel. Start the backend and ensure PostgreSQL is running.', true);
         return;
       }
 
@@ -538,7 +686,7 @@ async function initializeAdminPage() {
     await verifyAdminPassword(trimmedPassword);
     setStoredAdminPassword(trimmedPassword);
     setAdminFormLocked(false);
-    setAdminStatus('Unlocked. You can now add, edit, and delete members.', 'success');
+    setAdminStatus('Unlocked. You can now add, edit, and delete Rotaractor records.', 'success');
     showToast('Admin panel unlocked.');
   };
 
@@ -560,10 +708,12 @@ async function initializeAdminPage() {
     fields.quote.value = member.quote || '';
     fields.intro.value = member.intro || '';
     fields.achievements.value = member.achievements || '';
+    fields.projects.value = normalizeTextList(member.projects).join(', ');
     fields.skills.value = normalizeSkills(member.skills).join(', ');
     fields.work.value = member.work || '';
+    updateAvatarPreview(fields.avatar.value);
 
-    showToast(`Editing ${member.name}`);
+    showToast(`Editing ${formatRotaractorName(member.name)}`);
   };
 
   const getProtectedHeaders = () => getAdminHeaders();
@@ -574,7 +724,7 @@ async function initializeAdminPage() {
       return;
     }
 
-    const yes = window.confirm('Delete this member? This cannot be undone.');
+    const yes = window.confirm('Delete this Rotaractor record? This cannot be undone.');
     if (!yes) return;
 
     try {
@@ -601,7 +751,7 @@ async function initializeAdminPage() {
         return;
       }
 
-      showToast('Member deleted successfully.');
+      showToast('Rotaractor deleted successfully.');
       await loadAdminMembers();
       resetForm();
     } catch (error) {
@@ -629,6 +779,7 @@ async function initializeAdminPage() {
       quote: fields.quote.value.trim(),
       intro: fields.intro.value.trim(),
       achievements: fields.achievements.value.trim(),
+      projects: normalizeTextList(fields.projects.value),
       skills: normalizeSkills(fields.skills.value),
       work: fields.work.value.trim()
     };
@@ -657,7 +808,7 @@ async function initializeAdminPage() {
         return;
       }
 
-      showToast(isEditing ? 'Member updated successfully.' : 'Member added successfully.');
+      showToast(isEditing ? 'Rotaractor updated successfully.' : 'Rotaractor added successfully.');
       await loadAdminMembers();
       resetForm();
     } catch (error) {
@@ -673,6 +824,30 @@ async function initializeAdminPage() {
     }
 
     resetForm();
+  });
+
+  fields.avatar.addEventListener('input', () => {
+    updateAvatarPreview(fields.avatar.value);
+  });
+
+  avatarUploadInput?.addEventListener('change', event => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = loadEvent => {
+      const imageData = String(loadEvent.target?.result || '');
+      fields.avatar.value = imageData;
+      updateAvatarPreview(imageData);
+      showToast('Avatar uploaded successfully.');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  clearAvatarBtn?.addEventListener('click', () => {
+    fields.avatar.value = '';
+    if (avatarUploadInput) avatarUploadInput.value = '';
+    updateAvatarPreview('');
   });
 
   unlockAdminBtn.addEventListener('click', async () => {
@@ -740,7 +915,7 @@ function renderAdminTable(members, onEditClick, onDeleteClick) {
   members.forEach(member => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${member.name}</td>
+      <td>${formatRotaractorName(member.name)}</td>
       <td>${member.role}</td>
       <td>${getText(member.board)}</td>
       <td class="actions">

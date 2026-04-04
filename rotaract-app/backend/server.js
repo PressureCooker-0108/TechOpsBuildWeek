@@ -86,8 +86,15 @@ const achievementsBank = [
   'Strengthened outreach through campaigns, partnerships, and volunteer engagement.'
 ];
 
+const projectBank = [
+  ['Annual Blood Donation Drive', 'Member Onboarding Sprint'],
+  ['Community Visit Campaign', 'Leadership Workshop Series'],
+  ['Digital Outreach Week', 'Volunteer Coordination Dashboard'],
+  ['Fundraiser Collaboration', 'Public Image Revamp']
+];
+
 const seedRows = baseMembers.map((member, index) => ({
-  name: member[0],
+  name: normalizeRotaractorName(member[0]),
   role: member[1],
   department: member[2],
   board: member[3],
@@ -98,7 +105,8 @@ const seedRows = baseMembers.map((member, index) => ({
   skills: skillsBank[index % skillsBank.length],
   work: workBank[index % workBank.length],
   intro: introBank[index % introBank.length],
-  achievements: achievementsBank[index % achievementsBank.length]
+  achievements: achievementsBank[index % achievementsBank.length],
+  projects: projectBank[index % projectBank.length]
 }));
 
 let usingDatabase = false;
@@ -140,7 +148,8 @@ async function ensureMembersTable() {
       skills TEXT[],
       work TEXT,
       intro TEXT,
-      achievements TEXT
+      achievements TEXT,
+      projects TEXT[]
     )
   `);
 
@@ -149,6 +158,15 @@ async function ensureMembersTable() {
   await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS work TEXT');
   await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS intro TEXT');
   await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS achievements TEXT');
+  await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS projects TEXT[]');
+
+  await tryQuery(`
+    UPDATE members
+    SET name = CONCAT('Rtr. ', BTRIM(name))
+    WHERE name IS NOT NULL
+      AND BTRIM(name) <> ''
+      AND name !~* '^(rtr\\.\\s+|rotaractor\\s+)'
+  `);
 }
 
 async function seedMembersIfEmpty() {
@@ -160,10 +178,10 @@ async function seedMembersIfEmpty() {
   for (const member of seedRows) {
     await tryQuery(
       `
-        INSERT INTO members (name, role, department, board, linkedin, email, avatar, quote, skills, work, intro, achievements)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+        INSERT INTO members (name, role, department, board, linkedin, email, avatar, quote, skills, work, intro, achievements, projects)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       `,
-      [member.name, member.role, member.department, member.board, member.linkedin, member.email, member.avatar, member.quote, member.skills, member.work, member.intro, member.achievements]
+      [member.name, member.role, member.department, member.board, member.linkedin, member.email, member.avatar, member.quote, member.skills, member.work, member.intro, member.achievements, member.projects]
     );
   }
 }
@@ -202,9 +220,37 @@ function normalizeSkills(value) {
   return [];
 }
 
+function normalizeTextList(value) {
+  if (Array.isArray(value)) {
+    return value.map(item => String(item).trim()).filter(Boolean);
+  }
+
+  if (typeof value === 'string' && value.trim()) {
+    return value
+      .split(/[\n,;]+/)
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+function normalizeRotaractorName(value) {
+  const cleanName = String(value || '').trim();
+  if (!cleanName) {
+    return '';
+  }
+
+  if (/^rtr\.\s+/i.test(cleanName) || /^rotaractor\s+/i.test(cleanName)) {
+    return cleanName;
+  }
+
+  return `Rtr. ${cleanName}`;
+}
+
 function normalizeMemberPayload(body) {
   return {
-    name: String(body.name || '').trim(),
+    name: normalizeRotaractorName(body.name),
     role: String(body.role || '').trim(),
     department: String(body.department || '').trim(),
     board: String(body.board || '').trim() || null,
@@ -215,12 +261,19 @@ function normalizeMemberPayload(body) {
     skills: normalizeSkills(body.skills),
     work: String(body.work || '').trim() || null,
     intro: String(body.intro || '').trim() || null,
-    achievements: String(body.achievements || '').trim() || null
+    achievements: String(body.achievements || '').trim() || null,
+    projects: normalizeTextList(body.projects)
   };
 }
 
 function filterLocalMembers(filters) {
-  return localMembers.filter(member => matchMember(member, filters)).sort((a, b) => a.id - b.id);
+  return localMembers
+    .filter(member => matchMember(member, filters))
+    .sort((a, b) => a.id - b.id)
+    .map(member => ({
+      ...member,
+      name: normalizeRotaractorName(member.name)
+    }));
 }
 
 async function getMembers(filters = {}) {
@@ -254,7 +307,10 @@ async function getMembers(filters = {}) {
 
   query += ' ORDER BY id ASC';
   const result = await tryQuery(query, values);
-  return result.rows;
+  return result.rows.map(member => ({
+    ...member,
+    name: normalizeRotaractorName(member.name)
+  }));
 }
 
 async function addMember(payload) {
@@ -266,8 +322,8 @@ async function addMember(payload) {
 
   const result = await tryQuery(
     `
-      INSERT INTO members (name, role, department, board, linkedin, email, avatar, quote, skills, work, intro, achievements)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      INSERT INTO members (name, role, department, board, linkedin, email, avatar, quote, skills, work, intro, achievements, projects)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       RETURNING *
     `,
     [
@@ -282,7 +338,8 @@ async function addMember(payload) {
       payload.skills || null,
       payload.work || null,
       payload.intro || null,
-      payload.achievements || null
+      payload.achievements || null,
+      payload.projects || null
     ]
   );
   return result.rows[0];
@@ -300,8 +357,8 @@ async function updateMember(id, payload) {
   const result = await tryQuery(
     `
       UPDATE members
-      SET name = $1, role = $2, department = $3, board = $4, linkedin = $5, email = $6, avatar = $7, quote = $8, skills = $9, work = $10, intro = $11, achievements = $12
-      WHERE id = $13
+      SET name = $1, role = $2, department = $3, board = $4, linkedin = $5, email = $6, avatar = $7, quote = $8, skills = $9, work = $10, intro = $11, achievements = $12, projects = $13
+      WHERE id = $14
       RETURNING *
     `,
     [
@@ -317,6 +374,7 @@ async function updateMember(id, payload) {
       payload.work || null,
       payload.intro || null,
       payload.achievements || null,
+      payload.projects || null,
       id
     ]
   );

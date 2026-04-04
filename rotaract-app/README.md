@@ -1,55 +1,99 @@
-# Rotaract App Deployment Notes
+# Rotaract Team Management App
 
-This setup keeps your current features and makes deployment straightforward:
+A lightweight full-stack app to manage Rotaractor profiles, board-wise team display, and admin-controlled create/edit/delete operations.
 
-- Database: Supabase Postgres
-- Backend API: Render (`rotaract-app/backend`)
-- Frontend: Vercel (`rotaract-app/frontend`)
+## Tech Stack
 
-## 1) Supabase
+- Frontend: HTML, CSS, vanilla JavaScript (`rotaract-app/frontend`)
+- Backend: Node.js + Express (`rotaract-app/backend/server.js`)
+- Database: PostgreSQL via `pg` (with in-memory fallback if DB is unavailable)
+- Auth model: password-guarded admin actions using `x-admin-password`
+- Deploy targets:
+  - Frontend: Vercel (`rotaract-app/frontend/vercel.json`)
+  - Backend: Render (`rotaract-app/backend/render.yaml`)
 
-Create a Supabase project and copy the Postgres connection string.
+## Project Structure
 
-Set this on Render as `DATABASE_URL`.
+```text
+rotaract-app/
+  backend/
+	server.js
+	db.js
+	sql/setup.sql
+	render.yaml
+  frontend/
+	index.html
+	admin.html
+	script.js
+	style.css
+	vercel.json
+```
 
-## 2) Render (backend)
+## Environment Variables (Backend)
 
-Service root should be `rotaract-app/backend`.
+Set these in your backend environment:
 
-Required env vars:
+- `ADMIN_PASSWORD` (required, do not keep default in production)
+- `DATABASE_URL` (recommended for hosted Postgres)
+- `CORS_ORIGIN` (your frontend URL, for example `https://your-app.vercel.app`)
 
-- `DATABASE_URL` = Supabase connection string
-- `ADMIN_PASSWORD` = your admin password
-- `CORS_ORIGIN` = your Vercel domain (for example: `https://your-app.vercel.app`)
+Optional local DB values (if not using `DATABASE_URL`):
 
-Render config file is included at `rotaract-app/backend/render.yaml`.
+- `DB_HOST`
+- `DB_PORT`
+- `DB_USER`
+- `DB_PASSWORD`
+- `DB_NAME`
 
-## 3) Vercel (frontend)
+## Run Locally
 
-Project root should be `rotaract-app/frontend`.
+1. Install backend dependencies.
+2. Configure env vars.
+3. Start backend.
+4. Open frontend pages in browser.
 
-`vercel.json` is included and rewrites `/api/*` to your Render backend.
+```powershell
+Set-Location "C:\Users\Adity\TechOpsBuildWeek\rotaract-app\backend"
+npm install
+npm run dev
+```
 
-Before deploying, update this file:
+Then open:
 
-- `rotaract-app/frontend/vercel.json`
-- Replace `https://YOUR-RENDER-SERVICE.onrender.com` with your real Render URL
+- Team page: `rotaract-app/frontend/index.html`
+- Admin page: `rotaract-app/frontend/admin.html`
 
-## 4) Local development
+Note: frontend code calls `http://localhost:3000` on localhost.
 
-Backend:
+## How to Access the Admin Page
 
-- Copy `rotaract-app/backend/.env.example` to `.env`
-- Fill values for local Postgres or use `DATABASE_URL`
-- Run backend on port 3000
+The Admin link is intentionally hidden from normal website navigation.
 
-Frontend:
+1. Open the page directly:
+   - Local: `/admin.html`
+   - Deployed: `https://<your-domain>/admin.html`
+2. Enter the admin password in the access prompt.
+3. After entering the page, unlock admin controls in the panel using the same password.
 
-- Open `rotaract-app/frontend/index.html` or `admin.html`
-- In local mode, frontend calls `http://localhost:3000`
+Current behavior:
 
-## 5) Quick verification
+- `/admin` rewrite is disabled; only `/admin.html` is used.
+- If prompt password is wrong (or cancelled), user is redirected to `index.html`.
+- Access is kept in `sessionStorage` for the current browser session.
 
-- `GET /health` should return `storage: "postgresql"` once DB is connected.
-- Add/edit/delete in admin page should persist after backend restart.
+## API Overview
+
+- `GET /health`
+- `POST /admin/verify`
+- `GET /members`
+- `GET /members/search`
+- `POST /members` (admin)
+- `PUT /members/:id` (admin)
+- `DELETE /members/:id` (admin)
+
+## Deployment Notes
+
+- Update `rotaract-app/frontend/vercel.json` API destination to your actual backend URL.
+- On Render, point root to `rotaract-app/backend` and use `render.yaml`.
+- Ensure `ADMIN_PASSWORD` and `DATABASE_URL` are configured before production rollout.
 

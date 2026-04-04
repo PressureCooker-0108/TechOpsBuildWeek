@@ -17,7 +17,7 @@
   <main class="admin-layout">
     <section class="admin-card">
       <h1>Admin Panel</h1>
-      <p class="admin-note">Use this panel to add, edit, and delete team members.</p>
+      <p class="admin-note">Use this panel to add, edit, and delete Rotaractor records.</p>
 
       <div class="admin-auth">
         <label for="adminPassword">Admin Password</label>
@@ -29,8 +29,8 @@
       <form id="memberForm" class="member-form">
         <input id="memberId" type="hidden" />
 
-        <label for="name">Name</label>
-        <input id="name" required />
+        <label for="name">Rotaractor Name</label>
+        <input id="name" placeholder="e.g. Aarav Mehta" required />
 
         <label for="role">Post</label>
         <input id="role" required />
@@ -49,6 +49,12 @@
 
         <label for="avatar">Avatar URL</label>
         <input id="avatar" type="url" placeholder="https://example.com/photo.jpg" />
+        <label for="avatarUpload">Or Upload Avatar</label>
+        <input id="avatarUpload" type="file" accept="image/*" />
+        <div class="avatar-manager">
+          <img id="avatarPreview" class="avatar-preview hidden" src="https://via.placeholder.com/64?text=R" alt="Avatar preview" />
+          <button type="button" id="clearAvatarBtn" class="outline">Clear Avatar</button>
+        </div>
 
         <label for="quote">Quote</label>
         <textarea id="quote" rows="3" placeholder="Short quote about the member"></textarea>
@@ -58,6 +64,9 @@
 
         <label for="achievements">Achievements</label>
         <textarea id="achievements" rows="3" placeholder="Mention key achievements"></textarea>
+
+        <label for="projects">Project Highlights</label>
+        <textarea id="projects" rows="3" placeholder="Comma-separated highlights, e.g. Fundraiser, Blood Donation Drive"></textarea>
 
         <label for="skills">Skills</label>
         <textarea id="skills" rows="3" placeholder="Comma-separated skills, e.g. Leadership, Design, Communication"></textarea>
@@ -73,9 +82,9 @@
     </section>
 
     <section class="admin-card">
-      <h2>Team Members</h2>
+      <h2>Rotaractors</h2>
       <p class="admin-note">Edit or remove records directly from this list.</p>
-      <div id="adminLoading" class="loading">Loading members...</div>
+      <div id="adminLoading" class="loading">Loading Rotaractors...</div>
       <div class="table-wrap">
         <table>
           <thead>
