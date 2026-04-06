@@ -383,20 +383,44 @@ function createMemberCard(member, index) {
   card.tabIndex = 0;
   card.style.setProperty('--stagger', `${index * 45}ms`);
   const displayName = formatRotaractorName(member.name);
+  const quote = getText(member.quote, 'Lead with service, grow with purpose.');
+  const contactLinks = [
+    member.email
+      ? `<a href="mailto:${member.email}">Email</a>`
+      : '',
+    member.linkedin
+      ? `<a href="${member.linkedin}" target="_blank" rel="noreferrer">LinkedIn</a>`
+      : ''
+  ].filter(Boolean);
+  const socialBadges = [member.role, member.department, member.board]
+    .filter(Boolean)
+    .map(item => `<span class="member-card__badge">${item}</span>`)
+    .join('');
 
   card.innerHTML = `
-    <div class="member-card__media">
-      <img class="avatar" src="${getText(member.avatar, 'https://via.placeholder.com/300x200?text=Rotaract+Member')}" alt="${displayName}" />
-      <div class="member-card__content">
-        <h3>${displayName}</h3>
-        <p class="member-card__role">${member.role}</p>
+    <div class="member-card__flip">
+      <div class="member-card__face member-card__face--front">
+        <div class="member-card__media">
+          <img class="avatar" src="${getText(member.avatar, 'https://via.placeholder.com/300x200?text=Rotaract+Member')}" alt="${displayName}" />
+          <div class="member-card__content">
+            <h3>${displayName}</h3>
+            <p class="member-card__role">${getText(member.role)}</p>
+          </div>
+        </div>
+        <p class="post-pill">${getText(member.role)}</p>
+        <p class="meta">Board: ${getText(member.board)}</p>
       </div>
-    </div>
-    <p class="post-pill">${member.role}</p>
-    <p class="meta">Board: ${getText(member.board)}</p>
-    <div class="social-links">
-      ${member.linkedin ? `<a href="${member.linkedin}" target="_blank" rel="noreferrer">LinkedIn</a>` : ''}
-      ${member.email ? `<a href="mailto:${member.email}">Email</a>` : ''}
+      <div class="member-card__face member-card__face--back">
+        <p class="member-card__quote">"${quote}"</p>
+        <div class="social-links member-card__back-links">
+          ${contactLinks.length
+            ? contactLinks.join('')
+            : '<span class="member-card__no-contact">Contact details unavailable</span>'}
+        </div>
+        <div class="member-card__badges">
+          ${socialBadges || '<span class="member-card__badge">Rotaractor</span>'}
+        </div>
+      </div>
     </div>
   `;
 
