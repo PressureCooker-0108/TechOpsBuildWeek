@@ -5,6 +5,7 @@ const API_BASE_URL =
     : '/api');
 const ADMIN_PASSWORD_KEY = 'rotaract-admin-password';
 const ADMIN_ACCESS_KEY = 'rotaract-admin-access-granted';
+const CARD_HOVER_OPEN_DELAY_MS = 320;
 const BOARD_SECTION_ORDER = ['TE Board', 'SE Board', 'FE Board'];
 const BOARD_SECTION_CLASS_MAP = {
   'FE Board': 'board-section--fe',
@@ -398,8 +399,8 @@ function createMemberCard(member, index) {
     .join('');
 
   card.innerHTML = `
-    <div class="member-card__flip">
-      <div class="member-card__face member-card__face--front">
+    <div class="member-card__book">
+      <div class="member-card__page member-card__page--left">
         <div class="member-card__media">
           <img class="avatar" src="${getText(member.avatar, 'https://via.placeholder.com/300x200?text=Rotaract+Member')}" alt="${displayName}" />
           <div class="member-card__content">
@@ -410,7 +411,8 @@ function createMemberCard(member, index) {
         <p class="post-pill">${getText(member.role)}</p>
         <p class="meta">Board: ${getText(member.board)}</p>
       </div>
-      <div class="member-card__face member-card__face--back">
+      <div class="member-card__page member-card__page--right">
+        <p class="member-card__brief">${getText(member.department, 'Rotaract Member')}</p>
         <p class="member-card__quote">"${quote}"</p>
         <div class="social-links member-card__back-links">
           ${contactLinks.length
@@ -423,6 +425,36 @@ function createMemberCard(member, index) {
       </div>
     </div>
   `;
+
+  let hoverTimer = null;
+
+  const clearHoverTimer = () => {
+    if (!hoverTimer) return;
+    clearTimeout(hoverTimer);
+    hoverTimer = null;
+  };
+
+  const scheduleOpen = () => {
+    clearHoverTimer();
+    hoverTimer = setTimeout(() => {
+      card.classList.add('is-hover-open');
+      hoverTimer = null;
+    }, CARD_HOVER_OPEN_DELAY_MS);
+  };
+
+  const closeBook = () => {
+    clearHoverTimer();
+    card.classList.remove('is-hover-open');
+  };
+
+  card.addEventListener('mouseenter', scheduleOpen);
+  card.addEventListener('mouseleave', closeBook);
+  card.addEventListener('focusin', scheduleOpen);
+  card.addEventListener('focusout', event => {
+    if (!card.contains(event.relatedTarget)) {
+      closeBook();
+    }
+  });
 
   card.addEventListener('click', event => {
     if (event.target.closest('a')) return;

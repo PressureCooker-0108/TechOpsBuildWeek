@@ -234,10 +234,11 @@ button {
   border-radius: 14px;
   padding: 0;
   min-height: 360px;
-  perspective: 1100px;
   overflow: hidden;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   cursor: pointer;
+  position: relative;
+  z-index: 1;
 }
 
 .member-card:hover {
@@ -258,34 +259,44 @@ button {
   margin: 0.2rem 0;
 }
 
-.member-card__flip {
-  position: relative;
-  width: 100%;
+.member-card__book {
+  display: flex;
+  align-items: stretch;
   min-height: 360px;
-  transform-style: preserve-3d;
-  transition: transform 0.52s var(--ease-premium);
+  transition: transform 0.42s var(--ease-premium);
 }
 
-.member-card__face {
-  position: absolute;
-  inset: 0;
+.member-card__page {
   display: flex;
   flex-direction: column;
   padding: 0.75rem;
-  backface-visibility: hidden;
-  border-radius: inherit;
+  transition: width 0.42s var(--ease-premium), opacity 0.34s var(--ease-premium), transform 0.42s var(--ease-premium);
 }
 
-.member-card__face--front {
+.member-card__page--left {
+  width: 100%;
+  transform-origin: left center;
   background: linear-gradient(155deg, #19191b 0%, #121214 100%);
 }
 
-.member-card__face--back {
-  justify-content: center;
+.member-card__page--right {
+  width: 0;
+  padding: 0.75rem 0;
+  opacity: 0;
+  overflow: hidden;
+  justify-content: flex-start;
   gap: 0.9rem;
   background: linear-gradient(165deg, #121214 0%, #1b1b1f 100%);
-  border: 1px solid rgba(212, 175, 55, 0.28);
-  transform: rotateY(180deg);
+  border-left: 1px solid rgba(212, 175, 55, 0.22);
+  transform: translateX(16px);
+}
+
+.member-card__brief {
+  margin: 0;
+  color: var(--gold-soft);
+  font-size: 0.83rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
 }
 
 .member-card__quote {
@@ -804,13 +815,28 @@ td.actions {
 }
 
 .team-page .member-card:hover {
-  transform: translateY(-8px) scale(1.015);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(212, 175, 55, 0.18);
+  border-color: rgba(212, 175, 55, 0.5);
 }
 
-.team-page .member-card:hover .member-card__flip,
-.team-page .member-card:focus-within .member-card__flip {
-  transform: rotateY(180deg);
+.team-page .member-card.is-hover-open,
+.team-page .member-card:focus-within {
+  transform: translateY(-10px) scale(1.035);
+  z-index: 30;
+  box-shadow: 0 24px 55px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.28);
+}
+
+.team-page .member-card.is-hover-open .member-card__page--left,
+.team-page .member-card:focus-within .member-card__page--left {
+  width: 54%;
+  transform: perspective(900px) rotateY(-6deg);
+}
+
+.team-page .member-card.is-hover-open .member-card__page--right,
+.team-page .member-card:focus-within .member-card__page--right {
+  width: 46%;
+  padding: 0.75rem;
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .team-page .member-card:hover .avatar {
@@ -906,7 +932,8 @@ body.admin-gated .toast {
 
 @media (prefers-reduced-motion: reduce) {
   .team-page .member-card,
-  .member-card__flip,
+  .member-card__book,
+  .member-card__page,
   .team-page .avatar,
   .profile-modal,
   .profile-modal__dialog,
