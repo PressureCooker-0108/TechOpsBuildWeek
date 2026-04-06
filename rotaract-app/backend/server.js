@@ -247,12 +247,67 @@ const feRoleBlueprints = [
   { role: 'Tech Support Coordinator', department: 'Technology', focus: 'forms, trackers, and digital process support' }
 ];
 
+const femaleFirstNames = new Set([
+  'Aadhya', 'Myra', 'Anvi', 'Samruddhi', 'Ishaani', 'Ritika', 'Trisha', 'Tanisha', 'Mihika', 'Saanvi',
+  'Kashvi', 'Prachi', 'Ira', 'Sakshi', 'Aarohi', 'Mrunmayi', 'Eesha', 'Prisha', 'Niyati', 'Suhani',
+  'Niharika', 'Rhea', 'Apeksha', 'Bhavya', 'Kritika', 'Manasi', 'Samiksha', 'Harini', 'Sharvari',
+  'Ishita', 'Nandini', 'Aarya'
+]);
+
+const maleFirstNames = new Set([
+  'Vian', 'Shaurya', 'Krish', 'Yuvan', 'Ariv', 'Nivaan', 'Aarush', 'Hridaan', 'Laksh', 'Vihaan',
+  'Atharva', 'Rudransh', 'Devansh', 'Tanish', 'Abeer', 'Reyansh', 'Samar', 'Arham', 'Advik', 'Parv',
+  'Yashas', 'Ayaan', 'Soham', 'Pranay', 'Ishir', 'Ritvik', 'Dhruv', 'Ved', 'Kiaan', 'Neil',
+  'Vedant', 'Pranav'
+]);
+
 function slugifyName(name) {
   return String(name || '')
     .toLowerCase()
     .replace(/[^a-z\s-]/g, '')
     .trim()
     .replace(/\s+/g, '-');
+}
+
+function stripRotaractorPrefix(name) {
+  return String(name || '').replace(/^(rtr\.\s+|rotaractor\s+)/i, '').trim();
+}
+
+function extractFirstName(name) {
+  const raw = stripRotaractorPrefix(name);
+  return raw.split(/\s+/)[0] || '';
+}
+
+function hashString(value) {
+  return [...String(value || '')].reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 7);
+}
+
+function inferAvatarTone(name) {
+  const first = extractFirstName(name);
+  if (femaleFirstNames.has(first)) return 'female';
+  if (maleFirstNames.has(first)) return 'male';
+  return 'neutral';
+}
+
+function buildSafeAvatarUrl(name, seed = 0) {
+  const cleanedName = stripRotaractorPrefix(name) || 'Rotaractor';
+  const tone = inferAvatarTone(cleanedName);
+  const palette = {
+    female: ['915f8f', '7f658f', '8e5f73', '6a5f92'],
+    male: ['4f6f8f', '5f7c7b', '5f6691', '4e7a84'],
+    neutral: ['6f6f75', '756b62', '5f707b', '6e6a5f']
+  };
+  const shades = palette[tone];
+  const colorIndex = (hashString(cleanedName) + Number(seed || 0)) % shades.length;
+  const background = shades[colorIndex];
+
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanedName)}&size=512&rounded=true&bold=true&background=${background}&color=ffffff&format=png`;
+}
+
+function isUnsafeAvatarUrl(value) {
+  const url = String(value || '').trim();
+  if (!url) return true;
+  return /(i\.pravatar\.cc|via\.placeholder\.com|via\.placeholder|placehold\.co)/i.test(url);
 }
 
 function pickProjects(index) {
@@ -295,7 +350,7 @@ function buildGeneratedMember({ name, role, department, board, focus, index, boa
     board,
     linkedin: `https://linkedin.com/in/${slug}`,
     email: `${slug.replace(/-/g, '.')}@rotaract.org`,
-    avatar: `https://i.pravatar.cc/400?img=${(index % 70) + 1}`,
+    avatar: buildSafeAvatarUrl(name, index),
     quote: quoteBank[index % quoteBank.length],
     skills,
     work: `${boardTone} Focuses on ${focus} while ensuring execution quality and volunteer confidence stay high across the board.`,
@@ -338,7 +393,7 @@ const teSeedRows = teBoardProfiles.map((profile, index) => {
     board: 'TE Board',
     linkedin: `https://linkedin.com/in/${slug}`,
     email: `${slug.replace(/-/g, '.')}@rotaract.org`,
-    avatar: `https://i.pravatar.cc/400?img=${(index % 70) + 1}`,
+    avatar: buildSafeAvatarUrl(profile.name, index),
     quote: profile.quote,
     skills: profile.skills,
     work: `Provides senior leadership for ${profile.focus} and mentors emerging board members through execution planning.`,
@@ -474,9 +529,24 @@ async function seedMembersIfEmpty() {
   }
 }
 
+async function sanitizeMemberAvatars() {
+  const result = await tryQuery('SELECT id, name, avatar FROM members ORDER BY id ASC');
+
+  for (let index = 0; index < result.rows.length; index += 1) {
+    const member = result.rows[index];
+    if (!isUnsafeAvatarUrl(member.avatar)) {
+      continue;
+    }
+
+    const safeAvatar = buildSafeAvatarUrl(member.name, index);
+    await tryQuery('UPDATE members SET avatar = $1 WHERE id = $2', [safeAvatar, member.id]);
+  }
+}
+
 async function initializeDatabase() {
   await ensureMembersTable();
   await seedMembersIfEmpty();
+  await sanitizeMemberAvatars();
   usingDatabase = true;
 }
 
@@ -559,14 +629,17 @@ function normalizeBoardLabel(value) {
 }
 
 function normalizeMemberPayload(body) {
+  const normalizedName = normalizeRotaractorName(body.name);
+  const rawAvatar = String(body.avatar || '').trim();
+
   return {
-    name: normalizeRotaractorName(body.name),
+    name: normalizedName,
     role: String(body.role || '').trim(),
     department: String(body.department || '').trim(),
     board: normalizeBoardLabel(body.board),
     linkedin: String(body.linkedin || '').trim() || null,
     email: String(body.email || '').trim() || null,
-    avatar: String(body.avatar || '').trim() || null,
+    avatar: (!rawAvatar || isUnsafeAvatarUrl(rawAvatar)) ? buildSafeAvatarUrl(normalizedName) : rawAvatar,
     quote: String(body.quote || '').trim() || null,
     skills: normalizeSkills(body.skills),
     work: String(body.work || '').trim() || null,

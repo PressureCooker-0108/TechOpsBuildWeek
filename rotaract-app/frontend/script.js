@@ -5,7 +5,8 @@ const API_BASE_URL =
     : '/api');
 const ADMIN_PASSWORD_KEY = 'rotaract-admin-password';
 const ADMIN_ACCESS_KEY = 'rotaract-admin-access-granted';
-const CARD_HOVER_OPEN_DELAY_MS = 450;
+const CARD_HOVER_OPEN_DELAY_MS = 600;
+const DEFAULT_AVATAR_URL = 'https://ui-avatars.com/api/?name=Rotaractor&size=600&rounded=true&bold=true&background=2b2b2f&color=f3dc97&format=png';
 const BOARD_SECTION_ORDER = ['TE Board', 'SE Board', 'FE Board'];
 const BOARD_SECTION_CLASS_MAP = {
   'FE Board': 'board-section--fe',
@@ -150,7 +151,7 @@ function openModal(member, sourceCard = null) {
 
   const displayName = formatRotaractorName(member.name);
 
-  document.getElementById('modalAvatar').src = getText(member.avatar, 'https://via.placeholder.com/600x400?text=Rotaract+Member');
+  document.getElementById('modalAvatar').src = getText(member.avatar, DEFAULT_AVATAR_URL);
   document.getElementById('modalAvatar').alt = `${displayName} profile photo`;
   document.getElementById('profileName').textContent = displayName;
   document.getElementById('modalPost').textContent = `Post: ${getText(member.role)}`;
@@ -399,10 +400,10 @@ function createMemberCard(member, index) {
     .join('');
 
   card.innerHTML = `
-    <div class="member-card__book">
-      <div class="member-card__page member-card__page--left">
+    <div class="member-card__flip">
+      <div class="member-card__face member-card__face--front">
         <div class="member-card__media">
-          <img class="avatar" src="${getText(member.avatar, 'https://via.placeholder.com/300x200?text=Rotaract+Member')}" alt="${displayName}" />
+          <img class="avatar" src="${getText(member.avatar, DEFAULT_AVATAR_URL)}" alt="${displayName}" />
           <div class="member-card__content">
             <h3>${displayName}</h3>
             <p class="member-card__role">${getText(member.role)}</p>
@@ -411,8 +412,7 @@ function createMemberCard(member, index) {
         <p class="post-pill">${getText(member.role)}</p>
         <p class="meta">Board: ${getText(member.board)}</p>
       </div>
-      <div class="member-card__page member-card__page--right">
-        <p class="member-card__brief">${getText(member.department, 'Rotaract Member')}</p>
+      <div class="member-card__face member-card__face--back">
         <p class="member-card__quote">"${quote}"</p>
         <div class="social-links member-card__back-links">
           ${contactLinks.length
@@ -442,17 +442,17 @@ function createMemberCard(member, index) {
     }, CARD_HOVER_OPEN_DELAY_MS);
   };
 
-  const closeBook = () => {
+  const closeFlip = () => {
     clearHoverTimer();
     card.classList.remove('is-hover-open');
   };
 
   card.addEventListener('mouseenter', scheduleOpen);
-  card.addEventListener('mouseleave', closeBook);
+  card.addEventListener('mouseleave', closeFlip);
   card.addEventListener('focusin', scheduleOpen);
   card.addEventListener('focusout', event => {
     if (!card.contains(event.relatedTarget)) {
-      closeBook();
+      closeFlip();
     }
   });
 
