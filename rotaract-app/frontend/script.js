@@ -96,17 +96,22 @@ function setupAmbientGearScrollAnimation() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   let isTicking = false;
+  let lastScrollY = window.scrollY || window.pageYOffset || 0;
+  const rotationByGear = new Map(gears.map(gear => [gear, 0]));
 
   const applyTransform = () => {
     const scrollY = window.scrollY || window.pageYOffset || 0;
+    const scrollDelta = scrollY - lastScrollY;
 
     gears.forEach(gear => {
-      const scrollSpeed = Number(gear.dataset.scrollSpeed || 0.2);
-      const rotateSpeed = Number(gear.dataset.rotateSpeed || 0.08);
-      const translateY = scrollY * scrollSpeed;
-      const rotation = scrollY * rotateSpeed;
-      gear.style.transform = `translate3d(0, ${translateY}px, 0) rotate(${rotation}deg)`;
+      const rotateSpeed = Math.abs(Number(gear.dataset.rotateSpeed || 0.08));
+      const currentRotation = rotationByGear.get(gear) || 0;
+      const nextRotation = currentRotation + (scrollDelta * rotateSpeed);
+      rotationByGear.set(gear, nextRotation);
+      gear.style.transform = `rotate(${nextRotation}deg)`;
     });
+
+    lastScrollY = scrollY;
 
     isTicking = false;
   };
