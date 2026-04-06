@@ -90,6 +90,38 @@ function deriveProjectHighlights(member) {
     .slice(0, 4);
 }
 
+function setupAmbientGearScrollAnimation() {
+  const gears = [...document.querySelectorAll('[data-scroll-gear]')];
+  if (!gears.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let isTicking = false;
+
+  const applyTransform = () => {
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+
+    gears.forEach(gear => {
+      const scrollSpeed = Number(gear.dataset.scrollSpeed || 0.2);
+      const rotateSpeed = Number(gear.dataset.rotateSpeed || 0.08);
+      const translateY = scrollY * scrollSpeed;
+      const rotation = scrollY * rotateSpeed;
+      gear.style.transform = `translate3d(0, ${translateY}px, 0) rotate(${rotation}deg)`;
+    });
+
+    isTicking = false;
+  };
+
+  const onScroll = () => {
+    if (isTicking) return;
+    isTicking = true;
+    requestAnimationFrame(applyTransform);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  applyTransform();
+}
+
 function setupModalHandlers() {
   const modal = document.getElementById('profileModal');
   const closeBtn = document.getElementById('modalCloseBtn');
@@ -546,6 +578,7 @@ async function initializeUserPage() {
   if (!searchInput) return;
 
   setupModalHandlers();
+  setupAmbientGearScrollAnimation();
 
   try {
     const response = await fetch(`${API_BASE_URL}/members`);

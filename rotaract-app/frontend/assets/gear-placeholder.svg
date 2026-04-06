@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Golden gear placeholder">
+  <defs>
+    <linearGradient id="gearGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f3dc97"/>
+      <stop offset="55%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#8a6c1f"/>
+    </linearGradient>
+  </defs>
+  <g fill="url(#gearGold)">
+    <rect x="236" y="8" width="40" height="86" rx="12"/>
+    <rect x="236" y="418" width="40" height="86" rx="12"/>
+    <rect x="8" y="236" width="86" height="40" rx="12"/>
+    <rect x="418" y="236" width="86" height="40" rx="12"/>
+    <rect x="75" y="75" width="70" height="36" rx="10" transform="rotate(-45 110 93)"/>
+    <rect x="367" y="75" width="70" height="36" rx="10" transform="rotate(45 402 93)"/>
+    <rect x="75" y="401" width="70" height="36" rx="10" transform="rotate(45 110 419)"/>
+    <rect x="367" y="401" width="70" height="36" rx="10" transform="rotate(-45 402 419)"/>
+  </g>
+  <circle cx="256" cy="256" r="170" fill="none" stroke="url(#gearGold)" stroke-width="72"/>
+  <circle cx="256" cy="256" r="62" fill="#111214"/>
+</svg>
+
