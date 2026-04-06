@@ -233,8 +233,8 @@ button {
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 0;
-  min-height: 360px;
-  overflow: hidden;
+  min-height: 292px;
+  overflow: visible;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   cursor: pointer;
   position: relative;
@@ -262,8 +262,9 @@ button {
 .member-card__book {
   display: flex;
   align-items: stretch;
-  min-height: 360px;
-  transition: transform 0.42s var(--ease-premium);
+  width: 100%;
+  min-height: 292px;
+  transition: width 0.42s var(--ease-premium), transform 0.42s var(--ease-premium);
 }
 
 .member-card__page {
@@ -281,7 +282,7 @@ button {
 
 .member-card__page--right {
   width: 0;
-  padding: 0.75rem 0;
+  padding: 0.6rem 0;
   opacity: 0;
   overflow: hidden;
   justify-content: flex-start;
@@ -304,6 +305,7 @@ button {
   color: var(--text);
   line-height: 1.55;
   font-style: italic;
+  font-size: 0.95rem;
 }
 
 .member-card__badges {
@@ -773,7 +775,7 @@ td.actions {
   position: relative;
   border-radius: 12px;
   overflow: hidden;
-  min-height: 230px;
+  min-height: 178px;
 }
 
 .member-card__media::after {
@@ -787,7 +789,7 @@ td.actions {
 .team-page .avatar {
   margin-bottom: 0;
   border-radius: 0;
-  height: 230px;
+  height: 178px;
   transition: transform 0.52s var(--ease-premium);
 }
 
@@ -820,21 +822,26 @@ td.actions {
 
 .team-page .member-card.is-hover-open,
 .team-page .member-card:focus-within {
-  transform: translateY(-10px) scale(1.035);
+  transform: translateY(-12px) scale(1.085);
   z-index: 30;
   box-shadow: 0 24px 55px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.28);
 }
 
+.team-page .member-card.is-hover-open .member-card__book,
+.team-page .member-card:focus-within .member-card__book {
+  width: 170%;
+}
+
 .team-page .member-card.is-hover-open .member-card__page--left,
 .team-page .member-card:focus-within .member-card__page--left {
-  width: 54%;
+  width: 58%;
   transform: perspective(900px) rotateY(-6deg);
 }
 
 .team-page .member-card.is-hover-open .member-card__page--right,
 .team-page .member-card:focus-within .member-card__page--right {
-  width: 46%;
-  padding: 0.75rem;
+  width: 42%;
+  padding: 0.65rem;
   opacity: 1;
   transform: translateX(0);
 }
@@ -970,11 +977,11 @@ body.admin-gated .toast {
   }
 
   .member-card__media {
-    min-height: 210px;
+    min-height: 168px;
   }
 
   .team-page .avatar {
-    height: 210px;
+    height: 168px;
   }
 
   .team-page .member-card {

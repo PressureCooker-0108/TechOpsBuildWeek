@@ -5,7 +5,7 @@ const API_BASE_URL =
     : '/api');
 const ADMIN_PASSWORD_KEY = 'rotaract-admin-password';
 const ADMIN_ACCESS_KEY = 'rotaract-admin-access-granted';
-const CARD_HOVER_OPEN_DELAY_MS = 320;
+const CARD_HOVER_OPEN_DELAY_MS = 450;
 const BOARD_SECTION_ORDER = ['TE Board', 'SE Board', 'FE Board'];
 const BOARD_SECTION_CLASS_MAP = {
   'FE Board': 'board-section--fe',
