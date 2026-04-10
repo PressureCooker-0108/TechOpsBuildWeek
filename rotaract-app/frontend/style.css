@@ -368,7 +368,7 @@ button {
 .profile-modal {
   position: fixed;
   inset: 0;
-  z-index: 4000;
+  z-index: 4000 !important;
   display: grid;
   place-items: center;
   padding: 1rem;
@@ -716,7 +716,7 @@ td.actions {
 }
 
 /* Ensure content renders above decorative background gears/orbs. */
-.team-page > *:not(.ambient-bg) {
+.team-page > *:not(.ambient-bg):not(.profile-modal) {
   position: relative;
   z-index: 1;
 }
