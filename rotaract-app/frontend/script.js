@@ -15,8 +15,6 @@ const BOARD_SECTION_CLASS_MAP = {
   'TE Board': 'board-section--te'
 };
 const FILTER_OUT_ANIMATION_MS = 220;
-const MODAL_BACKDROP_GUARD_MS = 260;
-let modalLastOpenedAt = 0;
 
 // Small floating message helper used for success/error feedback.
 function showToast(message, isError = false) {
@@ -133,20 +131,10 @@ async function animateCardsOutBeforeRender(memberGrid) {
 function setupModalHandlers() {
   const modal = document.getElementById('profileModal');
   const closeBtn = document.getElementById('modalCloseBtn');
-  const backdrop = modal?.querySelector('.profile-modal__backdrop');
 
   if (!modal || modal.dataset.bound === 'true') return;
 
   modal.dataset.bound = 'true';
-
-  modal.addEventListener('click', event => {
-    if (event.target === backdrop) {
-      if (Date.now() - modalLastOpenedAt < MODAL_BACKDROP_GUARD_MS) {
-        return;
-      }
-      closeModal();
-    }
-  });
 
   closeBtn?.addEventListener('click', closeModal);
 
@@ -194,7 +182,6 @@ function animateDialogFromCard(sourceCard) {
 function openModal(member, sourceCard = null) {
   const modal = document.getElementById('profileModal');
   if (!modal) return;
-  modalLastOpenedAt = Date.now();
 
   const displayName = formatRotaractorName(member.name);
 
@@ -516,12 +503,7 @@ function createMemberCard(member, index) {
   card.addEventListener('click', event => {
     if (event.target.closest('a')) return;
     event.stopPropagation();
-
-    card.classList.add('is-clicked');
-    setTimeout(() => {
-      card.classList.remove('is-clicked');
-      openModal(member, card);
-    }, 90);
+    openModal(member, card);
   });
 
   card.addEventListener('keydown', event => {
