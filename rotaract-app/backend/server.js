@@ -102,7 +102,6 @@ const teBoardProfiles = [
   {
     name: 'Vedant Patwardhan',
     role: 'Club President',
-    department: 'Leadership',
     focus: 'club strategy, board governance, and long-term service planning',
     personality: 'a composed systems-leader who balances vision with disciplined execution',
     traits: ['Strategic', 'Grounded', 'Mentoring'],
@@ -118,7 +117,6 @@ const teBoardProfiles = [
   {
     name: 'Ishita Deshpande',
     role: 'Vice President',
-    department: 'Leadership',
     focus: 'cross-board execution alignment, bottleneck resolution, and team accountability',
     personality: 'an execution-first leader who turns broad goals into actionable timelines',
     traits: ['Proactive', 'Structured', 'Supportive'],
@@ -134,7 +132,6 @@ const teBoardProfiles = [
   {
     name: 'Soham Kulkarni',
     role: 'Secretary',
-    department: 'Administration',
     focus: 'institutional records, communication hygiene, and governance documentation',
     personality: 'a detail-oriented communicator who keeps records precise and accessible',
     traits: ['Organized', 'Reliable', 'Composed'],
@@ -150,7 +147,6 @@ const teBoardProfiles = [
   {
     name: 'Aarya Bhosale',
     role: 'Director - Club Service',
-    department: 'Club Service',
     focus: 'member wellbeing, club culture rituals, and retention systems',
     personality: 'a warm community architect who designs belonging-focused club experiences',
     traits: ['Inclusive', 'Creative', 'Consistent'],
@@ -166,7 +162,6 @@ const teBoardProfiles = [
   {
     name: 'Reyansh Jadhav',
     role: 'Director - Community Service',
-    department: 'Community Service',
     focus: 'field impact execution, NGO collaboration, and service outcome tracking',
     personality: 'a pragmatic field leader who values measurable community outcomes',
     traits: ['Service-driven', 'Practical', 'Persistent'],
@@ -182,7 +177,6 @@ const teBoardProfiles = [
   {
     name: 'Nandini Gokhale',
     role: 'Director - Personal Development',
-    department: 'Personal Development',
     focus: 'member growth pathways, capability-building, and leadership readiness',
     personality: 'a growth mentor who combines career clarity with confidence-building',
     traits: ['Mentoring', 'Insightful', 'Encouraging'],
@@ -198,7 +192,6 @@ const teBoardProfiles = [
   {
     name: 'Pranav Apte',
     role: 'Director - International Service',
-    department: 'International Service',
     focus: 'global club collaboration, SDG-linked dialogue, and cross-cultural learning initiatives',
     personality: 'a globally aware planner who turns networks into meaningful service exchanges',
     traits: ['Curious', 'Diplomatic', 'Forward-looking'],
@@ -214,39 +207,39 @@ const teBoardProfiles = [
 ];
 
 const seRoleBlueprints = [
-  { role: 'Joint Secretary', department: 'Administration', focus: 'agenda tracking and documentation follow-ups' },
-  { role: 'Deputy Treasurer', department: 'Finance', focus: 'budget checkpoints and spending reports' },
-  { role: 'Public Image Lead', department: 'Public Relations', focus: 'campaign messaging and audience engagement' },
-  { role: 'Club Service Coordinator', department: 'Club Service', focus: 'member bonding activities and attendance rhythms' },
-  { role: 'Community Service Coordinator', department: 'Community Service', focus: 'field volunteer planning with NGO partners' },
-  { role: 'Personal Development Coordinator', department: 'Personal Development', focus: 'training calendars and speaker outreach' },
-  { role: 'International Service Coordinator', department: 'International Service', focus: 'global project communication and exchange planning' },
-  { role: 'Sponsorship Lead', department: 'Relations', focus: 'sponsor conversations and partner servicing' },
-  { role: 'Logistics Lead', department: 'Operations', focus: 'event flow mapping and execution readiness' },
-  { role: 'Design Lead', department: 'Creative', focus: 'visual storytelling and campaign creatives' },
-  { role: 'Social Media Lead', department: 'Media', focus: 'content pipeline and publishing quality' },
-  { role: 'Volunteer Engagement Lead', department: 'Membership', focus: 'volunteer onboarding and shift planning' },
-  { role: 'Event Experience Lead', department: 'Events', focus: 'event format design and attendee feedback loops' },
-  { role: 'Impact Measurement Lead', department: 'Strategy', focus: 'outcome tracking and review dashboards' },
-  { role: 'Campus Outreach Lead', department: 'Community Service', focus: 'student outreach and awareness initiatives' },
-  { role: 'Innovation Projects Lead', department: 'Projects', focus: 'pilot initiatives and rapid experimentation' },
-  { role: 'Training Content Lead', department: 'Personal Development', focus: 'curriculum design and skill micro-modules' },
-  { role: 'Technology Operations Lead', department: 'Technology', focus: 'workflow automations and tool support' }
+  { role: 'Joint Secretary', focus: 'agenda tracking and documentation follow-ups' },
+  { role: 'Deputy Treasurer', focus: 'budget checkpoints and spending reports' },
+  { role: 'Public Image Lead', focus: 'campaign messaging and audience engagement' },
+  { role: 'Club Service Coordinator', focus: 'member bonding activities and attendance rhythms' },
+  { role: 'Community Service Coordinator', focus: 'field volunteer planning with NGO partners' },
+  { role: 'Personal Development Coordinator', focus: 'training calendars and speaker outreach' },
+  { role: 'International Service Coordinator', focus: 'global project communication and exchange planning' },
+  { role: 'Sponsorship Lead', focus: 'sponsor conversations and partner servicing' },
+  { role: 'Logistics Lead', focus: 'event flow mapping and execution readiness' },
+  { role: 'Design Lead', focus: 'visual storytelling and campaign creatives' },
+  { role: 'Social Media Lead', focus: 'content pipeline and publishing quality' },
+  { role: 'Volunteer Engagement Lead', focus: 'volunteer onboarding and shift planning' },
+  { role: 'Event Experience Lead', focus: 'event format design and attendee feedback loops' },
+  { role: 'Impact Measurement Lead', focus: 'outcome tracking and review dashboards' },
+  { role: 'Campus Outreach Lead', focus: 'student outreach and awareness initiatives' },
+  { role: 'Innovation Projects Lead', focus: 'pilot initiatives and rapid experimentation' },
+  { role: 'Training Content Lead', focus: 'curriculum design and skill micro-modules' },
+  { role: 'Technology Operations Lead', focus: 'workflow automations and tool support' }
 ];
 
 const feRoleBlueprints = [
-  { role: 'Service Coordinator', department: 'Community Service', focus: 'on-ground volunteer support and activity execution' },
-  { role: 'Event Coordinator', department: 'Events', focus: 'session logistics and participant support' },
-  { role: 'Public Image Coordinator', department: 'Public Relations', focus: 'event coverage and story amplification' },
-  { role: 'Digital Media Coordinator', department: 'Media', focus: 'social posting and visual consistency' },
-  { role: 'Creative Coordinator', department: 'Creative', focus: 'design assets and campaign creatives' },
-  { role: 'Membership Coordinator', department: 'Membership', focus: 'new-member support and engagement touchpoints' },
-  { role: 'Projects Coordinator', department: 'Projects', focus: 'task follow-up and initiative documentation' },
-  { role: 'Operations Coordinator', department: 'Operations', focus: 'materials, venue flow, and volunteer movement' },
-  { role: 'Fundraising Coordinator', department: 'Finance', focus: 'fundraiser execution and donor communication' },
-  { role: 'Personal Development Coordinator', department: 'Personal Development', focus: 'workshop operations and learning support' },
-  { role: 'International Service Coordinator', department: 'International Service', focus: 'exchange session support and research' },
-  { role: 'Tech Support Coordinator', department: 'Technology', focus: 'forms, trackers, and digital process support' }
+  { role: 'Service Coordinator', focus: 'on-ground volunteer support and activity execution' },
+  { role: 'Event Coordinator', focus: 'session logistics and participant support' },
+  { role: 'Public Image Coordinator', focus: 'event coverage and story amplification' },
+  { role: 'Digital Media Coordinator', focus: 'social posting and visual consistency' },
+  { role: 'Creative Coordinator', focus: 'design assets and campaign creatives' },
+  { role: 'Membership Coordinator', focus: 'new-member support and engagement touchpoints' },
+  { role: 'Projects Coordinator', focus: 'task follow-up and initiative documentation' },
+  { role: 'Operations Coordinator', focus: 'materials, venue flow, and volunteer movement' },
+  { role: 'Fundraising Coordinator', focus: 'fundraiser execution and donor communication' },
+  { role: 'Personal Development Coordinator', focus: 'workshop operations and learning support' },
+  { role: 'International Service Coordinator', focus: 'exchange session support and research' },
+  { role: 'Tech Support Coordinator', focus: 'forms, trackers, and digital process support' }
 ];
 
 const femaleFirstNames = new Set([
@@ -342,7 +335,7 @@ function buildUniqueName(seedIndex, usedNames) {
 }
 
 // Builds one generated member object with intro, traits, skills, achievements, and projects.
-function buildGeneratedMember({ name, role, department, board, focus, index, boardTone }) {
+function buildGeneratedMember({ name, role, board, focus, index, boardTone }) {
   const traits = traitTriples[index % traitTriples.length];
   const skills = skillsBank[index % skillsBank.length];
   const style = personalityStyles[index % personalityStyles.length];
@@ -352,7 +345,6 @@ function buildGeneratedMember({ name, role, department, board, focus, index, boa
   return {
     name: normalizeRotaractorName(name),
     role,
-    department,
     board,
     linkedin: `https://linkedin.com/in/${slug}`,
     email: `${slug.replace(/-/g, '.')}@rotaract.org`,
@@ -380,7 +372,6 @@ function buildBoardMembers({ board, count, startIndex, roleBlueprints, usedNames
     return buildGeneratedMember({
       name,
       role: blueprint.role,
-      department: blueprint.department,
       board,
       focus: blueprint.focus,
       index,
@@ -396,7 +387,6 @@ const teSeedRows = teBoardProfiles.map((profile, index) => {
   return {
     name: normalizeRotaractorName(profile.name),
     role: profile.role,
-    department: profile.department,
     board: 'TE Board',
     linkedin: `https://linkedin.com/in/${slug}`,
     email: `${slug.replace(/-/g, '.')}@rotaract.org`,
@@ -466,7 +456,6 @@ async function ensureMembersTable() {
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       role TEXT NOT NULL,
-      department TEXT NOT NULL,
       board TEXT,
       linkedin TEXT,
       email TEXT,
@@ -480,6 +469,7 @@ async function ensureMembersTable() {
     )
   `);
 
+  await tryQuery('ALTER TABLE members DROP COLUMN IF EXISTS department');
   await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS quote TEXT');
   await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS skills TEXT[]');
   await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS work TEXT');
@@ -533,10 +523,10 @@ async function seedMembersIfEmpty() {
   for (const member of seedRows) {
     await tryQuery(
       `
-        INSERT INTO members (name, role, department, board, linkedin, email, avatar, quote, skills, work, intro, achievements, projects)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        INSERT INTO members (name, role, board, linkedin, email, avatar, quote, skills, work, intro, achievements, projects)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `,
-      [member.name, member.role, member.department, member.board, member.linkedin, member.email, member.avatar, member.quote, member.skills, member.work, member.intro, member.achievements, member.projects]
+              [member.name, member.role, member.board, member.linkedin, member.email, member.avatar, member.quote, member.skills, member.work, member.intro, member.achievements, member.projects]
     );
   }
 }
@@ -566,16 +556,15 @@ async function initializeDatabase() {
 
 // Search/filter predicate used by in-memory mode.
 function matchMember(member, filters) {
-  const { q = '', board = '', department = '', role = '' } = filters;
+  const { q = '', board = '', role = '' } = filters;
   const search = q.trim().toLowerCase();
-  const fields = [member.name, member.role, member.department, member.board].join(' ').toLowerCase();
+  const fields = [member.name, member.role, member.board].join(' ').toLowerCase();
 
   const matchesSearch = !search || fields.includes(search);
   const matchesBoard = !board || member.board === board;
-  const matchesDepartment = !department || member.department === department;
   const matchesRole = !role || member.role === role;
 
-  return matchesSearch && matchesBoard && matchesDepartment && matchesRole;
+  return matchesSearch && matchesBoard && matchesRole;
 }
 
 // Input normalizers keep frontend and backend payload formats aligned.
@@ -651,7 +640,6 @@ function normalizeMemberPayload(body) {
   return {
     name: normalizedName,
     role: String(body.role || '').trim(),
-    department: String(body.department || '').trim(),
     board: normalizeBoardLabel(body.board),
     linkedin: String(body.linkedin || '').trim() || null,
     email: String(body.email || '').trim() || null,
@@ -681,23 +669,18 @@ async function getMembers(filters = {}) {
     return filterLocalMembers(filters);
   }
 
-  const { q = '', board = '', department = '', role = '' } = filters;
+  const { q = '', board = '', role = '' } = filters;
   const values = [];
   let query = 'SELECT * FROM members WHERE 1=1';
 
   if (q.trim()) {
     values.push(`%${q.trim()}%`);
-    query += ` AND (name ILIKE $${values.length} OR role ILIKE $${values.length} OR department ILIKE $${values.length} OR board ILIKE $${values.length})`;
+    query += ` AND (name ILIKE $${values.length} OR role ILIKE $${values.length} OR board ILIKE $${values.length})`;
   }
 
   if (board) {
     values.push(board);
     query += ` AND board = $${values.length}`;
-  }
-
-  if (department) {
-    values.push(department);
-    query += ` AND department = $${values.length}`;
   }
 
   if (role) {
@@ -722,14 +705,13 @@ async function addMember(payload) {
 
   const result = await tryQuery(
     `
-      INSERT INTO members (name, role, department, board, linkedin, email, avatar, quote, skills, work, intro, achievements, projects)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      INSERT INTO members (name, role, board, linkedin, email, avatar, quote, skills, work, intro, achievements, projects)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING *
     `,
     [
       payload.name,
       payload.role,
-      payload.department,
       payload.board || null,
       payload.linkedin || null,
       payload.email || null,
@@ -757,14 +739,13 @@ async function updateMember(id, payload) {
   const result = await tryQuery(
     `
       UPDATE members
-      SET name = $1, role = $2, department = $3, board = $4, linkedin = $5, email = $6, avatar = $7, quote = $8, skills = $9, work = $10, intro = $11, achievements = $12, projects = $13
-      WHERE id = $14
+      SET name = $1, role = $2, board = $3, linkedin = $4, email = $5, avatar = $6, quote = $7, skills = $8, work = $9, intro = $10, achievements = $11, projects = $12
+      WHERE id = $13
       RETURNING *
     `,
     [
       payload.name,
       payload.role,
-      payload.department,
       payload.board || null,
       payload.linkedin || null,
       payload.email || null,
@@ -830,8 +811,8 @@ app.post('/members', requireAdmin, async (req, res) => {
   try {
     const payload = normalizeMemberPayload(req.body);
 
-    if (!payload.name || !payload.role || !payload.department) {
-      return res.status(400).json({ message: 'Name, role, and department are required.' });
+    if (!payload.name || !payload.role) {
+      return res.status(400).json({ message: 'Name and role are required.' });
     }
 
     const member = await addMember(payload);
@@ -852,8 +833,8 @@ app.put('/members/:id', requireAdmin, async (req, res) => {
 
     const payload = normalizeMemberPayload(req.body);
 
-    if (!payload.name || !payload.role || !payload.department) {
-      return res.status(400).json({ message: 'Name, role, and department are required.' });
+    if (!payload.name || !payload.role) {
+      return res.status(400).json({ message: 'Name and role are required.' });
     }
 
     const member = await updateMember(id, payload);

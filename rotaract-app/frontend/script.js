@@ -181,14 +181,13 @@ function openModal(member, sourceCard = null) {
   document.getElementById('modalAvatar').alt = `${displayName} profile photo`;
   document.getElementById('profileName').textContent = displayName;
   document.getElementById('modalPost').textContent = `Post: ${getText(member.role)}`;
-  document.getElementById('modalDepartment').textContent = `Department: ${getText(member.department)}`;
   document.getElementById('modalBoard').textContent = `Board: ${getText(member.board)}`;
   document.getElementById('modalIntro').textContent = getText(member.intro, 'No introduction added yet.');
   document.getElementById('modalQuote').textContent = getText(member.quote, 'No quote added yet.');
   document.getElementById('modalWork').textContent = getText(member.work, 'No work description available.');
 
   const badgeWrap = document.getElementById('modalBadges');
-  const badges = [member.role, member.department, member.board].filter(Boolean);
+  const badges = [member.role, member.board].filter(Boolean);
   if (member.linkedin) badges.push('LinkedIn Ready');
   if (member.email) badges.push('Email Reachable');
   badgeWrap.innerHTML = badges.length
@@ -429,7 +428,7 @@ function createMemberCard(member, index) {
       ? `<a href="${member.linkedin}" target="_blank" rel="noreferrer">LinkedIn</a>`
       : ''
   ].filter(Boolean);
-  const socialBadges = [member.role, member.department, member.board]
+  const socialBadges = [member.role, member.board]
     .filter(Boolean)
     .map(item => `<span class="member-card__badge">${item}</span>`)
     .join('');
@@ -637,7 +636,6 @@ async function initializeAdminPage() {
   const fields = {
     name: document.getElementById('name'),
     role: document.getElementById('role'),
-    department: document.getElementById('department'),
     board: document.getElementById('board'),
     linkedin: document.getElementById('linkedin'),
     email: document.getElementById('email'),
@@ -719,7 +717,6 @@ async function initializeAdminPage() {
 
     fields.name.value = member.name || '';
     fields.role.value = member.role || '';
-    fields.department.value = member.department || '';
     fields.board.value = member.board || '';
     fields.linkedin.value = member.linkedin || '';
     fields.email.value = member.email || '';
@@ -790,7 +787,6 @@ async function initializeAdminPage() {
     const payload = {
       name: fields.name.value.trim(),
       role: fields.role.value.trim(),
-      department: fields.department.value.trim(),
       board: fields.board.value.trim(),
       linkedin: fields.linkedin.value.trim(),
       email: fields.email.value.trim(),

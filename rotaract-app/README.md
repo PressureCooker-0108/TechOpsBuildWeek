@@ -2,6 +2,20 @@
 
 A lightweight full-stack app to manage Rotaractor profiles, board-wise team display, and admin-controlled create/edit/delete operations.
 
+## Problem Statement
+
+**Rotaract Member Profile Page**
+
+- Member introduction
+- Role in club
+- Skills & contributions
+- Achievements section
+- Can be a single profile or multiple cards
+
+## Solution
+
+This project solves the problem by providing a Rotaract team page that displays members as multiple cards, each with profile details, skills, contributions, and achievements. It also includes an admin panel for managing member data and a backend API to store and serve the member profiles.
+
 ## Tech Stack
 
 - Frontend: HTML, CSS, vanilla JavaScript (`rotaract-app/frontend`)

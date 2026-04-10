@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS members (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   role TEXT NOT NULL,
-  department TEXT NOT NULL,
   board TEXT,
   linkedin TEXT,
   email TEXT,
@@ -18,6 +17,7 @@ CREATE TABLE IF NOT EXISTS members (
   projects TEXT[]
 );
 
+ALTER TABLE members DROP COLUMN IF EXISTS department;
 ALTER TABLE members ADD COLUMN IF NOT EXISTS quote TEXT;
 ALTER TABLE members ADD COLUMN IF NOT EXISTS skills TEXT[];
 ALTER TABLE members ADD COLUMN IF NOT EXISTS work TEXT;
