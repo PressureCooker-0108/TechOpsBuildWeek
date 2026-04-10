@@ -14,6 +14,8 @@ const BOARD_SECTION_CLASS_MAP = {
   'SE Board': 'board-section--se',
   'TE Board': 'board-section--te'
 };
+const FILTER_OUT_ANIMATION_MS = 220;
+const MODAL_TRANSITION_MS = 240;
 
 // Small floating message helper used for success/error feedback.
 function showToast(message, isError = false) {
@@ -111,6 +113,19 @@ function setupAmbientGearScrollAnimation() {
       gear.style.removeProperty('animation');
     }
   });
+}
+
+// Smoothly fades/lifts existing cards out before new filtered results are rendered.
+async function animateCardsOutBeforeRender(memberGrid) {
+  if (!memberGrid) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const cards = memberGrid.querySelectorAll('.member-card');
+  if (!cards.length) return;
+
+  memberGrid.classList.add('is-filtering-out');
+  await new Promise(resolve => setTimeout(resolve, FILTER_OUT_ANIMATION_MS));
+  memberGrid.classList.remove('is-filtering-out');
 }
 
 // Binds modal close interactions once so events are not duplicated.
@@ -213,6 +228,10 @@ function openModal(member, sourceCard = null) {
     : '<span class="skill-tag">No skills listed</span>';
 
   modal.classList.remove('hidden');
+  modal.classList.remove('is-closing');
+  requestAnimationFrame(() => {
+    modal.classList.add('is-visible');
+  });
   modal.setAttribute('aria-hidden', 'false');
   document.body.classList.add('modal-open');
 
@@ -226,9 +245,19 @@ function closeModal() {
   const modal = document.getElementById('profileModal');
   if (!modal) return;
 
-  modal.classList.add('hidden');
+  if (modal.classList.contains('hidden')) return;
+
+  modal.classList.remove('is-visible');
+  modal.classList.add('is-closing');
   modal.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('modal-open');
+
+  window.setTimeout(() => {
+    if (!modal.classList.contains('is-visible')) {
+      modal.classList.add('hidden');
+      modal.classList.remove('is-closing');
+    }
+  }, MODAL_TRANSITION_MS);
 }
 
 // Session storage helpers for admin password state.
@@ -336,6 +365,7 @@ async function fetchMembersForUser() {
     }
 
     const members = await response.json();
+    await animateCardsOutBeforeRender(memberGrid);
     renderMembers(members, memberGrid, emptyState);
   } catch (error) {
     showToast(error.message, true);
@@ -417,7 +447,8 @@ function createMemberCard(member, index) {
   const card = document.createElement('article');
   card.className = 'member-card';
   card.tabIndex = 0;
-  card.style.setProperty('--stagger', `${index * 45}ms`);
+  const staggerDelay = Math.min(index * 70, 700);
+  card.style.setProperty('--stagger', `${staggerDelay}ms`);
   const displayName = formatRotaractorName(member.name);
   const quote = getText(member.quote, 'Lead with service, grow with purpose.');
   const contactLinks = [
