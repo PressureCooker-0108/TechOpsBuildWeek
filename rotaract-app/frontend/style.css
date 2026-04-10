@@ -372,9 +372,8 @@ button {
   display: grid;
   place-items: center;
   padding: 1rem;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.24s var(--ease-premium);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .profile-modal.hidden {
@@ -386,8 +385,8 @@ button {
   inset: 0;
   background: rgba(0, 0, 0, 0.72);
   backdrop-filter: blur(10px);
-  opacity: 0;
-  transition: opacity 0.24s var(--ease-premium);
+  opacity: 1;
+  animation: backdropFadeIn 0.2s var(--ease-premium) both;
 }
 
 .profile-modal__dialog {
@@ -399,26 +398,12 @@ button {
   border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 16px;
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
-  transform: translateY(22px);
-  opacity: 0;
-  transition: transform 0.26s var(--ease-premium), opacity 0.26s var(--ease-premium);
+  transform: translateY(0);
+  opacity: 1;
+  animation: modalSlideIn 0.24s var(--ease-premium) both;
   padding: 1rem;
   display: grid;
   gap: 1rem;
-}
-
-.profile-modal.is-visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.profile-modal.is-visible .profile-modal__backdrop {
-  opacity: 1;
-}
-
-.profile-modal.is-visible .profile-modal__dialog {
-  transform: translateY(0);
-  opacity: 1;
 }
 
 .profile-modal__close {
@@ -942,7 +927,7 @@ td.actions {
 }
 
 .profile-modal {
-  transition: opacity 0.24s var(--ease-premium);
+  transition: none;
 }
 
 .profile-modal.hidden {
@@ -950,14 +935,14 @@ td.actions {
 }
 
 .profile-modal__backdrop {
-  transition: opacity 0.24s var(--ease-premium);
+  transition: none;
 }
 
 .profile-modal__dialog {
   padding: 1.2rem;
   gap: 1.2rem;
   background: linear-gradient(165deg, #0b0b0c 0%, #111114 100%);
-  transition: transform 0.26s var(--ease-premium), opacity 0.26s var(--ease-premium);
+  transition: none;
 }
 
 .profile-modal__post {
@@ -999,6 +984,26 @@ td.actions {
   to {
     opacity: 0;
     transform: translateY(8px) scale(0.985);
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 

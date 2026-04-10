@@ -15,7 +15,6 @@ const BOARD_SECTION_CLASS_MAP = {
   'TE Board': 'board-section--te'
 };
 const FILTER_OUT_ANIMATION_MS = 220;
-const MODAL_TRANSITION_MS = 240;
 
 // Small floating message helper used for success/error feedback.
 function showToast(message, isError = false) {
@@ -228,10 +227,6 @@ function openModal(member, sourceCard = null) {
     : '<span class="skill-tag">No skills listed</span>';
 
   modal.classList.remove('hidden');
-  modal.classList.remove('is-closing');
-  requestAnimationFrame(() => {
-    modal.classList.add('is-visible');
-  });
   modal.setAttribute('aria-hidden', 'false');
   document.body.classList.add('modal-open');
 
@@ -245,19 +240,9 @@ function closeModal() {
   const modal = document.getElementById('profileModal');
   if (!modal) return;
 
-  if (modal.classList.contains('hidden')) return;
-
-  modal.classList.remove('is-visible');
-  modal.classList.add('is-closing');
+  modal.classList.add('hidden');
   modal.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('modal-open');
-
-  window.setTimeout(() => {
-    if (!modal.classList.contains('is-visible')) {
-      modal.classList.add('hidden');
-      modal.classList.remove('is-closing');
-    }
-  }, MODAL_TRANSITION_MS);
 }
 
 // Session storage helpers for admin password state.
