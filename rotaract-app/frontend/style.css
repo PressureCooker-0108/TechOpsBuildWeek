@@ -249,6 +249,7 @@ button {
   cursor: pointer;
   position: relative;
   z-index: 1;
+  transform-origin: center center;
 }
 
 .member-card:hover {
@@ -262,7 +263,7 @@ button {
   width: 100%;
   min-height: 312px;
   transform-style: preserve-3d;
-  transition: transform 0.56s var(--ease-premium);
+  transition: transform 0.856s var(--ease-premium);
 }
 
 .member-card__face {
@@ -742,6 +743,7 @@ td.actions {
   transform: translate3d(0, 0, 0) rotate(0deg);
   transform-origin: center;
   will-change: transform;
+  animation: ambientGearSpin 32s linear infinite;
 }
 
 .ambient-bg__gear-img--one {
@@ -749,6 +751,7 @@ td.actions {
   height: 240px;
   left: 6%;
   top: 6%;
+  animation-duration: 34s;
 }
 
 .ambient-bg__gear-img--two {
@@ -756,6 +759,8 @@ td.actions {
   height: 190px;
   left: 21%;
   top: 18%;
+  animation-duration: 26s;
+  animation-direction: reverse;
 }
 
 .ambient-bg__gear-img--three {
@@ -763,6 +768,7 @@ td.actions {
   height: 300px;
   right: 4%;
   top: 8%;
+  animation-duration: 40s;
 }
 
 .team-page .hero h1 {
@@ -880,10 +886,6 @@ td.actions {
   transform: rotateY(180deg);
 }
 
-.team-page .member-card:hover .avatar {
-  transform: scale(1.06);
-}
-
 .team-page .member-card:hover .member-card__content {
   transform: translateY(0);
   opacity: 1;
@@ -962,6 +964,15 @@ td.actions {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ambientGearSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 

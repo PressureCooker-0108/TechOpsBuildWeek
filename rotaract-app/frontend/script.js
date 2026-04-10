@@ -97,42 +97,20 @@ function deriveProjectHighlights(member) {
     .slice(0, 4);
 }
 
-// Rotates decorative gears based on scroll direction and amount.
+// Keeps ambient gears running via CSS animation (no scroll coupling).
 function setupAmbientGearScrollAnimation() {
   const gears = [...document.querySelectorAll('[data-scroll-gear]')];
   if (!gears.length) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let isTicking = false;
-  let lastScrollY = window.scrollY || window.pageYOffset || 0;
-  const rotationByGear = new Map(gears.map(gear => [gear, 0]));
-
-  const applyTransform = () => {
-    const scrollY = window.scrollY || window.pageYOffset || 0;
-    const scrollDelta = scrollY - lastScrollY;
-
-    gears.forEach(gear => {
-      const rotateSpeed = Math.abs(Number(gear.dataset.rotateSpeed || 0.08));
-      const currentRotation = rotationByGear.get(gear) || 0;
-      const nextRotation = currentRotation + (scrollDelta * rotateSpeed);
-      rotationByGear.set(gear, nextRotation);
-      gear.style.transform = `rotate(${nextRotation}deg)`;
-    });
-
-    lastScrollY = scrollY;
-
-    isTicking = false;
-  };
-
-  const onScroll = () => {
-    if (isTicking) return;
-    isTicking = true;
-    requestAnimationFrame(applyTransform);
-  };
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
-  applyTransform();
+  gears.forEach(gear => {
+    gear.style.removeProperty('transform');
+    if (prefersReducedMotion) {
+      gear.style.animation = 'none';
+    } else {
+      gear.style.removeProperty('animation');
+    }
+  });
 }
 
 // Binds modal close interactions once so events are not duplicated.
