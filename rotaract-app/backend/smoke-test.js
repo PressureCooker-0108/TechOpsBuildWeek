@@ -1,9 +1,12 @@
+// Change API_BASE_URL only when backend is running on a non-default URL.
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
 
+// Quick connectivity check for health + members routes.
 async function runSmokeTest() {
   console.log('Running API smoke test...');
 
   try {
+    // Step 1: basic server heartbeat.
     const healthResponse = await fetch(`${API_BASE_URL}/health`);
     const healthJson = await healthResponse.json();
 
@@ -13,6 +16,7 @@ async function runSmokeTest() {
 
     console.log('Health check:', healthJson);
 
+    // Step 2: core data endpoint reachability.
     const membersResponse = await fetch(`${API_BASE_URL}/members`);
     if (!membersResponse.ok) {
       console.log('Members endpoint is reachable but returned non-OK status.');

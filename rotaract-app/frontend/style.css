@@ -1,3 +1,4 @@
+/* Global design tokens used across team + admin pages. */
 :root {
   --bg: #000000;
   --card: #0d0d0d;
@@ -5,16 +6,18 @@
   --muted: #d5d2bf;
   --gold: #d4af37;
   --gold-soft: #e8c96f;
-  --early-bird: #cea2fd;
+  --early-bird: #b784f5;
   --border: #2c2c2f;
   --danger: #df5d5d;
   --ease-premium: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+/* Keep layout math predictable everywhere. */
 * {
   box-sizing: border-box;
 }
 
+/* Base page styling shared by both HTML pages. */
 body {
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -27,6 +30,7 @@ body.modal-open {
   overflow: hidden;
 }
 
+/* Sticky top bar for quick navigation. */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -65,6 +69,7 @@ body.modal-open {
   background: var(--gold);
 }
 
+/* Intro section at the top of the team page. */
 .hero {
   max-width: 900px;
   margin: 2.5rem auto 0;
@@ -167,6 +172,7 @@ button {
   gap: 0.6rem;
 }
 
+/* Responsive grid that holds all member cards. */
 .member-grid {
   max-width: 1100px;
   margin: 0 auto 2rem;
@@ -230,6 +236,7 @@ button {
 }
 
 
+/* Individual member card shell with 3D flip support. */
 .member-card {
   background: linear-gradient(155deg, #19191b 0%, #121214 100%);
   border: 1px solid var(--border);
@@ -333,8 +340,8 @@ button {
   margin: 0.4rem 0 0;
   padding: 0.35rem 0.7rem;
   border-radius: 999px;
-  background: rgba(206, 162, 253, 0.16);
-  border: 1px solid rgba(206, 162, 253, 0.42);
+  background: rgba(183, 132, 245, 0.2);
+  border: 1px solid rgba(183, 132, 245, 0.48);
   color: var(--early-bird);
   font-size: 0.85rem;
   font-weight: 700;
@@ -356,6 +363,7 @@ button {
   color: var(--gold);
 }
 
+/* Popup modal that shows full profile details. */
 .profile-modal {
   position: fixed;
   inset: 0;
@@ -548,6 +556,7 @@ button {
   display: none !important;
 }
 
+/* Two-column admin workspace (form + table). */
 .admin-layout {
   max-width: 1150px;
   margin: 1.5rem auto;
@@ -682,6 +691,7 @@ td.actions {
   border-left-color: var(--danger);
 }
 
+/* Team page visual theme (black + gold ambient look). */
 .team-page {
   position: relative;
   background:
@@ -694,7 +704,13 @@ td.actions {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
+}
+
+/* Ensure content renders above decorative background gears/orbs. */
+.team-page > *:not(.ambient-bg) {
+  position: relative;
+  z-index: 1;
 }
 
 .ambient-bg__orb {
@@ -721,7 +737,7 @@ td.actions {
 
 .ambient-bg__gear-img {
   position: absolute;
-  opacity: 0.18;
+  opacity: 0.28;
   filter: drop-shadow(0 6px 20px rgba(212, 175, 55, 0.25));
   transform: translate3d(0, 0, 0) rotate(0deg);
   transform-origin: center;
@@ -752,7 +768,7 @@ td.actions {
 .team-page .hero h1 {
   font-size: clamp(2.4rem, 5.4vw, 4.1rem);
   letter-spacing: 0.01em;
-  background: linear-gradient(90deg, var(--early-bird) 0%, #efe2ff 40%, var(--early-bird) 100%);
+  background: linear-gradient(90deg, var(--early-bird) 0%, #e6d1ff 40%, var(--early-bird) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -848,12 +864,13 @@ td.actions {
 }
 
 .team-page .member-card:hover {
+  transform: translateY(-10px) scale(1.06);
   border-color: rgba(212, 175, 55, 0.5);
 }
 
 .team-page .member-card.is-hover-open,
 .team-page .member-card:focus-within {
-  transform: translateY(-9px) scale(1.03);
+  transform: translateY(-12px) scale(1.08);
   z-index: 30;
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(212, 175, 55, 0.22);
 }
@@ -878,6 +895,23 @@ td.actions {
 
 .member-card__back-links {
   margin-top: 0;
+}
+
+/* Simple visual ending so the page does not stop abruptly. */
+.page-ending {
+  margin: 2rem auto 0;
+  padding: 2rem 1rem 2.4rem;
+  max-width: 1100px;
+  border-top: 1px solid rgba(212, 175, 55, 0.25);
+  text-align: center;
+}
+
+.page-ending__line {
+  margin: 0;
+  color: var(--gold-soft);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
 .profile-modal {
@@ -949,6 +983,7 @@ body.admin-gated .toast {
   display: none;
 }
 
+/* Respect users who prefer less animation/motion. */
 @media (prefers-reduced-motion: reduce) {
   .team-page .member-card,
   .member-card__flip,

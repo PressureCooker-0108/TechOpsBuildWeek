@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body class="admin-gated">
+  <!-- Top navigation (admin link is intentionally not exposed from team page). -->
   <nav class="navbar">
     <div class="brand">Rotaract Club of WCE Sangli</div>
     <div class="nav-links">
@@ -14,11 +15,14 @@
     </div>
   </nav>
 
+  <!-- Main admin workspace: left side form, right side member table. -->
   <main class="admin-layout">
+    <!-- Member editor form used for create + update actions. -->
     <section class="admin-card">
       <h1>Admin Panel</h1>
       <p class="admin-note">Use this panel to add, edit, and delete Rotaractor records.</p>
 
+      <!-- Password gate for admin-only mutations (add/edit/delete). -->
       <div class="admin-auth">
         <label for="adminPassword">Admin Password</label>
         <input id="adminPassword" type="password" placeholder="Enter admin password" autocomplete="current-password" />
@@ -26,6 +30,7 @@
         <p id="authStatus" class="auth-status">Locked. Enter the admin password to enable add/edit/delete actions.</p>
       </div>
 
+      <!-- Form fields map directly to backend member payload fields. -->
       <form id="memberForm" class="member-form">
         <input id="memberId" type="hidden" />
 
@@ -81,6 +86,7 @@
       </form>
     </section>
 
+    <!-- Live table of all members for quick edit/delete actions. -->
     <section class="admin-card">
       <h2>Rotaractors</h2>
       <p class="admin-note">Edit or remove records directly from this list.</p>
@@ -101,8 +107,10 @@
     </section>
   </main>
 
+  <!-- Shared toast for transient status messages. -->
   <div id="toast" class="toast hidden"></div>
 
+  <!-- Shared JavaScript contains both team and admin page logic. -->
   <script src="./script.js"></script>
 </body>
 </html>

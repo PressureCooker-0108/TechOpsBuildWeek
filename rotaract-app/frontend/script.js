@@ -1,3 +1,4 @@
+// API endpoint selection: localhost during development, /api when deployed behind a proxy.
 const API_BASE_URL =
   window.__API_BASE_URL__ ||
   ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
@@ -14,6 +15,7 @@ const BOARD_SECTION_CLASS_MAP = {
   'TE Board': 'board-section--te'
 };
 
+// Small floating message helper used for success/error feedback.
 function showToast(message, isError = false) {
   const toast = document.getElementById('toast');
   if (!toast) return;
@@ -30,10 +32,12 @@ function showToast(message, isError = false) {
   }, 2400);
 }
 
+// Returns readable fallback text when a value is empty/null.
 function getText(value, fallback = '-') {
   return value && String(value).trim() ? value : fallback;
 }
 
+// Ensures all displayed names follow the Rotaractor naming convention.
 function formatRotaractorName(name) {
   const cleanName = String(name || '').trim();
   if (!cleanName) {
@@ -47,6 +51,7 @@ function formatRotaractorName(name) {
   return `Rtr. ${cleanName}`;
 }
 
+// Normalizes skills from either array input or comma-separated text.
 function normalizeSkills(skills) {
   if (Array.isArray(skills)) {
     return skills.map(skill => String(skill).trim()).filter(Boolean);
@@ -62,6 +67,7 @@ function normalizeSkills(skills) {
   return [];
 }
 
+// Normalizes list-like fields (projects/achievements) from text or arrays.
 function normalizeTextList(value) {
   if (Array.isArray(value)) {
     return value.map(item => String(item).trim()).filter(Boolean);
@@ -77,6 +83,7 @@ function normalizeTextList(value) {
   return [];
 }
 
+// Uses explicit project data first, then creates highlights from work description.
 function deriveProjectHighlights(member) {
   const explicitProjects = normalizeTextList(member.projects);
   if (explicitProjects.length) {
@@ -90,6 +97,7 @@ function deriveProjectHighlights(member) {
     .slice(0, 4);
 }
 
+// Rotates decorative gears based on scroll direction and amount.
 function setupAmbientGearScrollAnimation() {
   const gears = [...document.querySelectorAll('[data-scroll-gear]')];
   if (!gears.length) return;
@@ -127,6 +135,7 @@ function setupAmbientGearScrollAnimation() {
   applyTransform();
 }
 
+// Binds modal close interactions once so events are not duplicated.
 function setupModalHandlers() {
   const modal = document.getElementById('profileModal');
   const closeBtn = document.getElementById('modalCloseBtn');
@@ -150,6 +159,7 @@ function setupModalHandlers() {
   });
 }
 
+// Adds a lightweight transform animation from clicked card -> modal dialog.
 function animateDialogFromCard(sourceCard) {
   const dialog = document.querySelector('.profile-modal__dialog');
   if (!dialog || !sourceCard || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -182,6 +192,7 @@ function animateDialogFromCard(sourceCard) {
   );
 }
 
+// Populates and opens the profile modal for a selected member card.
 function openModal(member, sourceCard = null) {
   const modal = document.getElementById('profileModal');
   if (!modal) return;
@@ -233,6 +244,7 @@ function openModal(member, sourceCard = null) {
   });
 }
 
+// Hides the profile modal and restores page scroll.
 function closeModal() {
   const modal = document.getElementById('profileModal');
   if (!modal) return;
@@ -242,6 +254,7 @@ function closeModal() {
   document.body.classList.remove('modal-open');
 }
 
+// Session storage helpers for admin password state.
 function getStoredAdminPassword() {
   return sessionStorage.getItem(ADMIN_PASSWORD_KEY) || '';
 }
@@ -254,6 +267,7 @@ function clearStoredAdminPassword() {
   sessionStorage.removeItem(ADMIN_PASSWORD_KEY);
 }
 
+// Updates the auth status line in admin UI.
 function setAdminStatus(message, state = '') {
   const authStatus = document.getElementById('authStatus');
   if (!authStatus) return;
@@ -265,6 +279,7 @@ function setAdminStatus(message, state = '') {
   }
 }
 
+// Enables/disables all admin form inputs depending on lock state.
 function setAdminFormLocked(isLocked) {
   const memberForm = document.getElementById('memberForm');
   const saveBtn = document.getElementById('saveBtn');
@@ -289,6 +304,7 @@ function setAdminFormLocked(isLocked) {
   if (unlockAdminBtn) unlockAdminBtn.disabled = false;
 }
 
+// Server-side password verification used by both admin gate and unlock action.
 async function verifyAdminPassword(password) {
   const response = await fetch(`${API_BASE_URL}/admin/verify`, {
     method: 'POST',
@@ -307,6 +323,7 @@ async function verifyAdminPassword(password) {
   return response.json();
 }
 
+// Builds request headers that include the admin password when available.
 function getAdminHeaders() {
   const password = getStoredAdminPassword();
   if (!password) return null;
@@ -317,6 +334,7 @@ function getAdminHeaders() {
   };
 }
 
+// Fetches filtered members for the team page list.
 async function fetchMembersForUser() {
   const loadingState = document.getElementById('loadingState');
   const emptyState = document.getElementById('emptyState');
@@ -349,6 +367,7 @@ async function fetchMembersForUser() {
   }
 }
 
+// Groups members by board and renders sections in TE -> SE -> FE order.
 function renderMembers(members, memberGrid, emptyState) {
   if (!memberGrid || !emptyState) return;
 
@@ -416,6 +435,7 @@ function renderMembers(members, memberGrid, emptyState) {
   });
 }
 
+// Creates one interactive card with delayed hover flip and click-to-open modal.
 function createMemberCard(member, index) {
   const card = document.createElement('article');
   card.className = 'member-card';
@@ -513,6 +533,7 @@ function createMemberCard(member, index) {
   return card;
 }
 
+// Renders top stat cards and animates numbers.
 function renderStats(members) {
   const stats = document.getElementById('stats');
   if (!stats) return;
@@ -563,6 +584,7 @@ function renderStats(members) {
   });
 }
 
+// Populates board dropdown options from currently loaded dataset.
 function fillFilterOptions(members) {
   const boardFilter = document.getElementById('boardFilter');
 
@@ -578,6 +600,7 @@ function fillFilterOptions(members) {
   });
 }
 
+// Bootstraps team page interactions (fetching, filters, modal, animations).
 async function initializeUserPage() {
   const searchInput = document.getElementById('searchInput');
   if (!searchInput) return;
@@ -615,6 +638,7 @@ async function initializeUserPage() {
   });
 }
 
+// Bootstraps admin page interactions (auth, form CRUD, image management).
 async function initializeAdminPage() {
   const memberForm = document.getElementById('memberForm');
   if (!memberForm) return;
@@ -898,6 +922,7 @@ async function initializeAdminPage() {
   await loadAdminMembers();
 }
 
+// First-level gate: asks password before showing any admin UI.
 async function ensureAdminPageAccess() {
   if (sessionStorage.getItem(ADMIN_ACCESS_KEY) === 'true') {
     return true;
@@ -923,6 +948,7 @@ async function ensureAdminPageAccess() {
   }
 }
 
+// Draws admin table rows and wires edit/delete buttons.
 function renderAdminTable(members, onEditClick, onDeleteClick) {
   const tbody = document.getElementById('memberTableBody');
   if (!tbody) return;
@@ -958,6 +984,7 @@ function renderAdminTable(members, onEditClick, onDeleteClick) {
   });
 }
 
+// Initialize both pages safely: each initializer exits early if its DOM is absent.
 initializeUserPage();
 initializeAdminPage();
 

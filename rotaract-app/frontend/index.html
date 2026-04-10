@@ -7,14 +7,16 @@
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body class="team-page">
+   <!-- Ambient decorative background: soft orbs + rotating gears. -->
   <div class="ambient-bg" aria-hidden="true">
     <span class="ambient-bg__orb ambient-bg__orb--one"></span>
     <span class="ambient-bg__orb ambient-bg__orb--two"></span>
-    <span class="ambient-bg__gear ambient-bg__gear--one"></span>
-    <span class="ambient-bg__gear ambient-bg__gear--two"></span>
-    <span class="ambient-bg__gear ambient-bg__gear--three"></span>
+    <img class="ambient-bg__gear-img ambient-bg__gear-img--one" src="./assets/gear-placeholder.svg" alt="" data-scroll-gear data-rotate-speed="0.12" />
+    <img class="ambient-bg__gear-img ambient-bg__gear-img--two" src="./assets/gear-placeholder.svg" alt="" data-scroll-gear data-rotate-speed="0.09" />
+    <img class="ambient-bg__gear-img ambient-bg__gear-img--three" src="./assets/gear-placeholder.svg" alt="" data-scroll-gear data-rotate-speed="0.07" />
   </div>
 
+  <!-- Top navigation for the public team page. -->
   <nav class="navbar">
     <div class="brand">Rotaract Club of WCE Sangli</div>
     <div class="nav-links">
@@ -22,14 +24,17 @@
     </div>
   </nav>
 
+  <!-- Hero header introducing the directory. -->
   <header class="hero">
     <p class="eyebrow">Rotaract Team Directory</p>
     <h1>Meet the Team</h1>
     <p>Discover our Rotaractors, their posts, and what they bring to the team.</p>
   </header>
 
+  <!-- Small stat cards are rendered here via JavaScript. -->
   <section class="stats" id="stats"></section>
 
+  <!-- Search and board filter controls. -->
   <section class="controls">
     <input id="searchInput" type="text" placeholder="Search by name or board" aria-label="Search Rotaractors" />
 
@@ -41,10 +46,12 @@
   </section>
 
 
+  <!-- Team list and state containers managed by script.js. -->
   <section id="loadingState" class="loading">Loading Rotaractors...</section>
   <section id="memberGrid" class="member-grid"></section>
   <section id="emptyState" class="empty hidden">No Rotaractors match your search/filter.</section>
 
+  <!-- Full profile modal opened when a member card is clicked. -->
   <div id="profileModal" class="profile-modal hidden" aria-hidden="true">
     <div class="profile-modal__backdrop" data-modal-close></div>
     <div class="profile-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="profileName">
@@ -77,6 +84,11 @@
       </div>
     </div>
   </div>
+
+  <!-- Closing section to give the page a clear ending. -->
+  <footer class="page-ending">
+    <p class="page-ending__line">Learning is our precept</p>
+  </footer>
 
   <div id="toast" class="toast hidden"></div>
 

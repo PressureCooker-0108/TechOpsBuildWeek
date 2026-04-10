@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pool from './db.js';
 
+// App configuration (env-driven with safe local defaults).
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'rotaract-admin';
@@ -21,6 +22,7 @@ const CURRENT_SEED_EMAIL_MARKERS = [
   'soham.kulkarni@rotaract.org'
 ];
 
+// Name pools used to generate realistic but fake member records.
 const firstNames = [
   'Vian', 'Aadhya', 'Shaurya', 'Myra', 'Krish', 'Anvi', 'Yuvan', 'Samruddhi', 'Ariv', 'Ishaani',
   'Nivaan', 'Ritika', 'Aarush', 'Trisha', 'Hridaan', 'Tanisha', 'Laksh', 'Mihika', 'Vihaan', 'Saanvi',
@@ -261,6 +263,7 @@ const maleFirstNames = new Set([
   'Vedant', 'Pranav'
 ]);
 
+// Utility helpers for consistent IDs, names, and avatar generation.
 function slugifyName(name) {
   return String(name || '')
     .toLowerCase()
@@ -289,6 +292,7 @@ function inferAvatarTone(name) {
   return 'neutral';
 }
 
+// Picks a safe avatar URL that stays culturally/gender appropriate via deterministic palettes.
 function buildSafeAvatarUrl(name, seed = 0) {
   const cleanedName = stripRotaractorPrefix(name) || 'Rotaractor';
   const tone = inferAvatarTone(cleanedName);
@@ -304,6 +308,7 @@ function buildSafeAvatarUrl(name, seed = 0) {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanedName)}&size=512&rounded=true&bold=true&background=${background}&color=ffffff&format=png`;
 }
 
+// Flags placeholder/unsafe avatar providers so we can auto-replace them.
 function isUnsafeAvatarUrl(value) {
   const url = String(value || '').trim();
   if (!url) return true;
@@ -336,6 +341,7 @@ function buildUniqueName(seedIndex, usedNames) {
   return fallback;
 }
 
+// Builds one generated member object with intro, traits, skills, achievements, and projects.
 function buildGeneratedMember({ name, role, department, board, focus, index, boardTone }) {
   const traits = traitTriples[index % traitTriples.length];
   const skills = skillsBank[index % skillsBank.length];
@@ -364,6 +370,7 @@ function buildGeneratedMember({ name, role, department, board, focus, index, boa
   };
 }
 
+// Generates board members from role blueprints and unique names.
 function buildBoardMembers({ board, count, startIndex, roleBlueprints, usedNames, boardTone }) {
   return Array.from({ length: count }, (_, offset) => {
     const blueprint = roleBlueprints[offset % roleBlueprints.length];
@@ -432,9 +439,11 @@ let localMembers = seedRows.map((member, index) => ({
 }));
 let nextLocalId = localMembers.length + 1;
 
+// Middleware setup.
 app.use(cors(CORS_ORIGIN ? { origin: CORS_ORIGIN } : undefined));
 app.use(express.json());
 
+// Simple admin guard that checks the password sent in request headers.
 function requireAdmin(req, res, next) {
   const incomingPassword = req.headers['x-admin-password'];
 
@@ -445,10 +454,12 @@ function requireAdmin(req, res, next) {
   return next();
 }
 
+// Thin query wrapper so DB usage is centralized.
 async function tryQuery(query, values = []) {
   return pool.query(query, values);
 }
 
+// Ensures schema exists and applies light forward-compatible migrations.
 async function ensureMembersTable() {
   await tryQuery(`
     CREATE TABLE IF NOT EXISTS members (
@@ -485,6 +496,7 @@ async function ensureMembersTable() {
   `);
 }
 
+// Replaces legacy datasets with current TE/SE/FE seeded dataset when needed.
 async function seedMembersIfEmpty() {
   const { rows } = await tryQuery(`
     SELECT
@@ -529,6 +541,7 @@ async function seedMembersIfEmpty() {
   }
 }
 
+// One-time sanitation to replace problematic avatar URLs.
 async function sanitizeMemberAvatars() {
   const result = await tryQuery('SELECT id, name, avatar FROM members ORDER BY id ASC');
 
@@ -543,6 +556,7 @@ async function sanitizeMemberAvatars() {
   }
 }
 
+// Tries to boot database mode; caller handles fallback on failure.
 async function initializeDatabase() {
   await ensureMembersTable();
   await seedMembersIfEmpty();
@@ -550,6 +564,7 @@ async function initializeDatabase() {
   usingDatabase = true;
 }
 
+// Search/filter predicate used by in-memory mode.
 function matchMember(member, filters) {
   const { q = '', board = '', department = '', role = '' } = filters;
   const search = q.trim().toLowerCase();
@@ -563,6 +578,7 @@ function matchMember(member, filters) {
   return matchesSearch && matchesBoard && matchesDepartment && matchesRole;
 }
 
+// Input normalizers keep frontend and backend payload formats aligned.
 function normalizeSkills(value) {
   if (Array.isArray(value)) {
     return value.map(skill => String(skill).trim()).filter(Boolean);
@@ -649,6 +665,7 @@ function normalizeMemberPayload(body) {
   };
 }
 
+// In-memory fallback helpers (used when PostgreSQL is unavailable).
 function filterLocalMembers(filters) {
   return localMembers
     .filter(member => matchMember(member, filters))
@@ -776,6 +793,7 @@ async function deleteMember(id) {
   return result.rows.length > 0;
 }
 
+// Public + admin API routes.
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'rotaract-api', storage: usingDatabase ? 'postgresql' : 'memory' });
 });
@@ -870,6 +888,7 @@ app.delete('/members/:id', requireAdmin, async (req, res) => {
   }
 });
 
+// Startup sequence: DB attempt first, memory fallback second.
 async function startServer() {
   try {
     try {
