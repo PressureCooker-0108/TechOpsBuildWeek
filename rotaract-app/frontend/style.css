@@ -368,7 +368,7 @@ button {
 .profile-modal {
   position: fixed;
   inset: 0;
-  z-index: 2000;
+  z-index: 4000;
   display: grid;
   place-items: center;
   padding: 1rem;
@@ -383,6 +383,7 @@ button {
 .profile-modal__backdrop {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: rgba(0, 0, 0, 0.72);
   backdrop-filter: blur(10px);
   opacity: 1;
@@ -391,6 +392,7 @@ button {
 
 .profile-modal__dialog {
   position: relative;
+  z-index: 2;
   width: min(92vw, 760px);
   max-height: min(90vh, 900px);
   overflow: auto;

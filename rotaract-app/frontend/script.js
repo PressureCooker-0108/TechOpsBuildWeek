@@ -145,41 +145,8 @@ function setupModalHandlers() {
   });
 }
 
-// Adds a lightweight transform animation from clicked card -> modal dialog.
-function animateDialogFromCard(sourceCard) {
-  const dialog = document.querySelector('.profile-modal__dialog');
-  if (!dialog || !sourceCard || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    return;
-  }
-
-  const cardRect = sourceCard.getBoundingClientRect();
-  const dialogRect = dialog.getBoundingClientRect();
-
-  const translateX = cardRect.left - dialogRect.left;
-  const translateY = cardRect.top - dialogRect.top;
-  const scaleX = cardRect.width / dialogRect.width;
-  const scaleY = cardRect.height / dialogRect.height;
-
-  dialog.animate(
-    [
-      {
-        transform: `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY})`,
-        opacity: 0.52
-      },
-      {
-        transform: 'translate(0, 0) scale(1, 1)',
-        opacity: 1
-      }
-    ],
-    {
-      duration: 360,
-      easing: 'cubic-bezier(0.22, 0.61, 0.36, 1)'
-    }
-  );
-}
-
 // Populates and opens the profile modal for a selected member card.
-function openModal(member, sourceCard = null) {
+function openModal(member) {
   const modal = document.getElementById('profileModal');
   if (!modal) return;
 
@@ -224,9 +191,13 @@ function openModal(member, sourceCard = null) {
   modal.setAttribute('aria-hidden', 'false');
   document.body.classList.add('modal-open');
 
-  requestAnimationFrame(() => {
-    animateDialogFromCard(sourceCard);
-  });
+  // Fail-safe so modal content is always visible even if animations are interrupted.
+  const dialog = modal.querySelector('.profile-modal__dialog');
+  if (dialog) {
+    dialog.style.opacity = '1';
+    dialog.style.transform = 'translateY(0)';
+  }
+
 }
 
 // Hides the profile modal and restores page scroll.
@@ -503,13 +474,13 @@ function createMemberCard(member, index) {
   card.addEventListener('click', event => {
     if (event.target.closest('a')) return;
     event.stopPropagation();
-    openModal(member, card);
+    openModal(member);
   });
 
   card.addEventListener('keydown', event => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      openModal(member, card);
+      openModal(member);
     }
   });
 
