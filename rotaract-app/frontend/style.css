@@ -1,10 +1,11 @@
 :root {
-  --bg: #0f0f10;
-  --card: #171719;
-  --text: #f7f4ea;
-  --muted: #bfb7a1;
+  --bg: #000000;
+  --card: #0d0d0d;
+  --text: #faf9e6;
+  --muted: #d5d2bf;
   --gold: #d4af37;
-  --gold-soft: #f3dc97;
+  --gold-soft: #e8c96f;
+  --early-bird: #cea2fd;
   --border: #2c2c2f;
   --danger: #df5d5d;
   --ease-premium: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -17,7 +18,7 @@
 body {
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
-  background: radial-gradient(circle at top, #1a1a1d 0%, var(--bg) 58%);
+  background: radial-gradient(circle at top, #101010 0%, var(--bg) 62%);
   color: var(--text);
   min-height: 100vh;
 }
@@ -205,8 +206,9 @@ button {
 
 .board-section__count {
   margin: 0;
-  color: var(--muted);
+  color: var(--early-bird);
   font-size: 0.88rem;
+  font-weight: 600;
 }
 
 .board-section__grid {
@@ -331,8 +333,9 @@ button {
   margin: 0.4rem 0 0;
   padding: 0.35rem 0.7rem;
   border-radius: 999px;
-  background: var(--gold);
-  color: #111;
+  background: rgba(206, 162, 253, 0.16);
+  border: 1px solid rgba(206, 162, 253, 0.42);
+  color: var(--early-bird);
   font-size: 0.85rem;
   font-weight: 700;
 }
@@ -420,11 +423,8 @@ button {
 }
 
 .profile-modal__post {
-  margin: 0;
-  color: var(--gold-soft);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.8rem;
+  color: var(--early-bird);
+  font-weight: 600;
 }
 
 .profile-modal__content h2 {
@@ -518,6 +518,12 @@ button {
   color: #111;
   font-size: 0.82rem;
   font-weight: 700;
+  transition: transform 0.2s var(--ease-premium), filter 0.2s var(--ease-premium);
+}
+
+.skill-tag:hover {
+  transform: scale(1.05);
+  filter: brightness(1.03);
 }
 
 @keyframes modalIn {
@@ -680,8 +686,8 @@ td.actions {
   position: relative;
   background:
     radial-gradient(1200px 500px at 15% -10%, rgba(212, 175, 55, 0.12), transparent 58%),
-    radial-gradient(900px 420px at 90% 0%, rgba(212, 175, 55, 0.06), transparent 62%),
-    linear-gradient(140deg, #080808 0%, #0f0f10 46%, #111214 100%);
+    radial-gradient(900px 420px at 90% 0%, rgba(212, 175, 55, 0.08), transparent 62%),
+    linear-gradient(140deg, #000000 0%, #050505 46%, #0a0a0a 100%);
 }
 
 .ambient-bg {
@@ -726,26 +732,30 @@ td.actions {
   width: 240px;
   height: 240px;
   left: 6%;
-  top: 62%;
+  top: 6%;
 }
 
 .ambient-bg__gear-img--two {
   width: 190px;
   height: 190px;
   left: 21%;
-  top: 71%;
+  top: 18%;
 }
 
 .ambient-bg__gear-img--three {
   width: 300px;
   height: 300px;
   right: 4%;
-  top: 56%;
+  top: 8%;
 }
 
 .team-page .hero h1 {
   font-size: clamp(2.4rem, 5.4vw, 4.1rem);
   letter-spacing: 0.01em;
+  background: linear-gradient(90deg, var(--early-bird) 0%, #efe2ff 40%, var(--early-bird) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .team-page .hero p {
@@ -833,7 +843,7 @@ td.actions {
 
 .member-card__role {
   margin: 0.2rem 0 0;
-  color: rgba(255, 250, 236, 0.88);
+  color: var(--early-bird);
   font-size: 0.9rem;
 }
 
@@ -891,7 +901,7 @@ td.actions {
 }
 
 .profile-modal__post {
-  color: #f0cf70;
+  color: var(--early-bird);
   font-weight: 600;
 }
 
@@ -908,11 +918,6 @@ td.actions {
 
 .skill-tag {
   transition: transform 0.2s var(--ease-premium), filter 0.2s var(--ease-premium);
-}
-
-.skill-tag:hover {
-  transform: scale(1.05);
-  filter: brightness(1.03);
 }
 
 @keyframes cardRise {
