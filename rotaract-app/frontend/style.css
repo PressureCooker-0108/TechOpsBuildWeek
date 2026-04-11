@@ -915,19 +915,60 @@ td.actions {
 
 /* Simple visual ending so the page does not stop abruptly. */
 .page-ending {
-  margin: 2rem auto 0;
-  padding: 2rem 1rem 2.4rem;
+  margin: 4rem auto 0;
+  padding: 2.5rem 1rem 2.6rem;
   max-width: 1100px;
-  border-top: 1px solid rgba(212, 175, 55, 0.25);
+  position: relative;
   text-align: center;
 }
 
+.page-ending::before {
+  content: '';
+  display: block;
+  width: min(320px, 60%);
+  height: 1px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.18) 18%, rgba(212, 175, 55, 0.55) 50%, rgba(212, 175, 55, 0.18) 82%, transparent 100%);
+}
+
 .page-ending__line {
-  margin: 0;
+  margin: 1rem 0 0;
   color: var(--gold-soft);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   font-weight: 700;
+}
+
+.page-loader {
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 0.45rem;
+  align-items: center;
+  z-index: 5000;
+  pointer-events: none;
+  opacity: 0;
+  animation: loaderFadeOut 1.85s var(--ease-premium) both;
+}
+
+.page-loader__ring {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(212, 175, 55, 0.9);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.03);
+}
+
+.page-loader__ring--one {
+  border-top-color: transparent;
+  animation: ringSpinClockwise 0.95s linear infinite;
+}
+
+.page-loader__ring--two {
+  border-right-color: transparent;
+  animation: ringSpinCounterClockwise 0.95s linear infinite;
 }
 
 .profile-modal {
@@ -1034,6 +1075,7 @@ td.actions {
 
 body.admin-gated .navbar,
 body.admin-gated .admin-layout,
+body.admin-gated .page-ending,
 body.admin-gated .toast {
   display: none;
 }
@@ -1050,7 +1092,16 @@ body.admin-gated .toast {
   .team-page .stat-card,
   .skill-tag,
   .team-page .controls input,
-  .team-page .controls select {
+  .team-page .controls select,
+  .hero,
+  .stats,
+  .controls,
+  .member-grid,
+  .page-ending,
+  .admin-layout,
+  .admin-card,
+  .page-loader,
+  .page-loader__ring {
     transition: none !important;
     animation: none !important;
   }
@@ -1088,6 +1139,48 @@ body.admin-gated .toast {
 
   .team-page .member-card {
     animation-delay: 0ms;
+  }
+
+  .page-loader {
+    right: 0.75rem;
+    top: 0.75rem;
+    gap: 0.35rem;
+  }
+}
+
+@keyframes ringSpinClockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ringSpinCounterClockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes loaderFadeOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-2px) scale(0.98);
   }
 }
 
