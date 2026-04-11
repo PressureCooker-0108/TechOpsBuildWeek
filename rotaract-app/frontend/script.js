@@ -421,7 +421,6 @@ function createMemberCard(member, index) {
           <img class="avatar" src="${getText(member.avatar, DEFAULT_AVATAR_URL)}" alt="${displayName}" />
           <div class="member-card__content">
             <h3>${displayName}</h3>
-            <p class="member-card__role">${getText(member.role)}</p>
           </div>
         </div>
         <p class="post-pill">${getText(member.role)}</p>

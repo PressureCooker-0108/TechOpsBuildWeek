@@ -781,15 +781,17 @@ td.actions {
 .team-page .hero h1 {
   font-size: clamp(2.4rem, 5.4vw, 4.1rem);
   letter-spacing: 0.01em;
-  background: linear-gradient(90deg, var(--early-bird) 0%, #e6d1ff 40%, var(--early-bird) 100%);
+  background: linear-gradient(90deg, var(--gold) 0%, #ffffff 46%, var(--early-bird) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.team-page .hero p {
+.team-page .hero > p:not(.eyebrow) {
   max-width: 740px;
-  font-size: 1.03rem;
+  font-size: 1.08rem;
+  color: #f7f3dd;
+  line-height: 1.7;
 }
 
 .team-page .controls input,
