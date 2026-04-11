@@ -811,10 +811,6 @@ app.post('/members', requireAdmin, async (req, res) => {
   try {
     const payload = normalizeMemberPayload(req.body);
 
-    if (!payload.name || !payload.role) {
-      return res.status(400).json({ message: 'Name and role are required.' });
-    }
-
     const member = await addMember(payload);
 
     res.status(201).json(member);
@@ -833,9 +829,6 @@ app.put('/members/:id', requireAdmin, async (req, res) => {
 
     const payload = normalizeMemberPayload(req.body);
 
-    if (!payload.name || !payload.role) {
-      return res.status(400).json({ message: 'Name and role are required.' });
-    }
 
     const member = await updateMember(id, payload);
 
