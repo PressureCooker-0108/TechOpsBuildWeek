@@ -431,7 +431,15 @@ let nextLocalId = localMembers.length + 1;
 
 // Middleware setup.
 app.use(cors(CORS_ORIGIN ? { origin: CORS_ORIGIN } : undefined));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+
+app.use((error, req, res, next) => {
+  if (error?.type === 'entity.too.large') {
+    return res.status(413).json({ message: 'Image or form data is too large. Please use a smaller avatar image.' });
+  }
+
+  return next(error);
+});
 
 // Simple admin guard that checks the password sent in request headers.
 function requireAdmin(req, res, next) {
