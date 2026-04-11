@@ -454,8 +454,8 @@ async function ensureMembersTable() {
   await tryQuery(`
     CREATE TABLE IF NOT EXISTS members (
       id SERIAL PRIMARY KEY,
-      name TEXT NOT NULL,
-      role TEXT NOT NULL,
+      name TEXT,
+      role TEXT,
       board TEXT,
       linkedin TEXT,
       email TEXT,
@@ -469,6 +469,8 @@ async function ensureMembersTable() {
     )
   `);
 
+  await tryQuery('ALTER TABLE members ALTER COLUMN name DROP NOT NULL');
+  await tryQuery('ALTER TABLE members ALTER COLUMN role DROP NOT NULL');
   await tryQuery('ALTER TABLE members DROP COLUMN IF EXISTS department');
   await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS quote TEXT');
   await tryQuery('ALTER TABLE members ADD COLUMN IF NOT EXISTS skills TEXT[]');
